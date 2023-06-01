@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SearchBooks from "./pages/SearchBooks";
 import SavedBooks from "./pages/SavedBooks";
 import Navbar from "./components/Navbar";
+import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
+import chakraTheme from '@chakra-ui/theme'
+
 
 import {
   ApolloClient,
@@ -35,9 +38,16 @@ const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
+const { Button } = chakraTheme.components
+const theme = extendBaseTheme({
+  components: {
+    Button,
+  },
+})
 
 function App() {
   return (
+    <ChakraBaseProvider theme={theme}>
     <ApolloProvider client={client}>
       <Router>
         <>
@@ -50,6 +60,7 @@ function App() {
         </>
       </Router>
     </ApolloProvider>
+    </ChakraBaseProvider>
   );
 }
 
