@@ -70,8 +70,6 @@ const SearchCoins = () => {
     try {
       await saveCoin({
         variables: {
-          //userId: Auth.getProfile().data._id,
-          //content: coinToSave,
           content: { ...coinToSave },
         },
       });
