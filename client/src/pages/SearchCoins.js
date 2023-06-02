@@ -5,7 +5,7 @@ import Auth from "../utils/auth";
 import { saveCoinIds, getSavedCoinIds } from "../utils/localStorage";
 
 import { useMutation } from "@apollo/client";
-import { SAVE_BOOK } from "../utils/mutations";
+import { SAVE_COIN } from "../utils/mutations";
 
 const SearchCoins = () => {
   // create state for holding returned google api data
@@ -15,7 +15,7 @@ const SearchCoins = () => {
 
   // create state to hold saved coinId values
   const [savedCoinIds, setSavedCoinIds] = useState(getSavedCoinIds());
-  const [saveCoin] = useMutation(SAVE_BOOK);
+  const [saveCoin] = useMutation(SAVE_COIN);
 
   // set up useEffect hook to save `savedCoinIds` list to localStorage on component unmount
   useEffect(() => {
@@ -70,8 +70,6 @@ const SearchCoins = () => {
     try {
       await saveCoin({
         variables: {
-          //userId: Auth.getProfile().data._id,
-          //content: coinToSave,
           content: { ...coinToSave },
         },
       });
