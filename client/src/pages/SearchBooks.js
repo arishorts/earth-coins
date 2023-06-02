@@ -2,27 +2,27 @@ import React, { useState, useEffect } from "react";
 import { Container, Col, Form, Button, Card, Row } from "react-bootstrap";
 
 import Auth from "../utils/auth";
-import { saveBookIds, getSavedBookIds } from "../utils/localStorage";
+import { saveCoinIds, getSavedCoinIds } from "../utils/localStorage";
 
 import { useMutation } from "@apollo/client";
 import { SAVE_BOOK } from "../utils/mutations";
 
-const SearchBooks = () => {
+const SearchCoins = () => {
   // create state for holding returned google api data
-  const [searchedBooks, setSearchedBooks] = useState([]);
+  const [searchedCoins, setSearchedCoins] = useState([]);
   // create state for holding our search field data
   const [searchInput, setSearchInput] = useState("");
 
-  // create state to hold saved bookId values
-  const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
-  const [saveBook] = useMutation(SAVE_BOOK);
+  // create state to hold saved coinId values
+  const [savedCoinIds, setSavedCoinIds] = useState(getSavedCoinIds());
+  const [saveCoin] = useMutation(SAVE_BOOK);
 
-  // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
+  // set up useEffect hook to save `savedCoinIds` list to localStorage on component unmount
   useEffect(() => {
-    return () => saveBookIds(savedBookIds);
+    return () => saveCoinIds(savedCoinIds);
   });
 
-  // create method to search for books and set state on form submit
+  // create method to search for coins and set state on form submit
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
@@ -32,7 +32,7 @@ const SearchBooks = () => {
 
     try {
       const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${searchInput}`
+        `https://www.googleapis.com/coins/v1/volumes?q=${searchInput}`
       );
 
       if (!response.ok) {
@@ -41,25 +41,25 @@ const SearchBooks = () => {
 
       const { items } = await response.json();
 
-      const bookData = items.map((book) => ({
-        bookId: book.id,
-        authors: book.volumeInfo.authors || ["No author to display"],
-        title: book.volumeInfo.title,
-        description: book.volumeInfo.description,
-        image: book.volumeInfo.imageLinks?.thumbnail || "",
+      const coinData = items.map((coin) => ({
+        coinId: coin.id,
+        authors: coin.volumeInfo.authors || ["No author to display"],
+        title: coin.volumeInfo.title,
+        description: coin.volumeInfo.description,
+        image: coin.volumeInfo.imageLinks?.thumbnail || "",
       }));
 
-      setSearchedBooks(bookData);
+      setSearchedCoins(coinData);
       setSearchInput("");
     } catch (err) {
       console.error(err);
     }
   };
 
-  // create function to handle saving a book to our database
-  const handleSaveBook = async (bookId) => {
-    // find the book in `searchedBooks` state by the matching id
-    const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
+  // create function to handle saving a coin to our database
+  const handleSaveCoin = async (coinId) => {
+    // find the coin in `searchedCoins` state by the matching id
+    const coinToSave = searchedCoins.find((coin) => coin.coinId === coinId);
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -68,16 +68,16 @@ const SearchBooks = () => {
       return false;
     }
     try {
-      await saveBook({
+      await saveCoin({
         variables: {
           //userId: Auth.getProfile().data._id,
-          //content: bookToSave,
-          content: { ...bookToSave },
+          //content: coinToSave,
+          content: { ...coinToSave },
         },
       });
 
-      // if book successfully saves to user's account, save book id to state
-      setSavedBookIds([bookToSave.bookId, ...savedBookIds]);
+      // if coin successfully saves to user's account, save coin id to state
+      setSavedCoinIds([coinToSave.coinId, ...savedCoinIds]);
     } catch (err) {
       console.error(err);
     }
@@ -87,7 +87,7 @@ const SearchBooks = () => {
     <>
       <div className="text-light bg-dark pt-5">
         <Container>
-          <h1>Search for Books!</h1>
+          <h1>Search for Coins!</h1>
           <Form onSubmit={handleFormSubmit}>
             <Row>
               <Col xs={12} md={8}>
@@ -97,7 +97,7 @@ const SearchBooks = () => {
                   onChange={(e) => setSearchInput(e.target.value)}
                   type="text"
                   size="lg"
-                  placeholder="Search for a book"
+                  placeholder="Search for a coin"
                 />
               </Col>
               <Col xs={12} md={4}>
@@ -112,39 +112,39 @@ const SearchBooks = () => {
 
       <Container>
         <h2 className="pt-5">
-          {searchedBooks.length
-            ? `Viewing ${searchedBooks.length} results:`
-            : "Search for a book to begin"}
+          {searchedCoins.length
+            ? `Viewing ${searchedCoins.length} results:`
+            : "Search for a coin to begin"}
         </h2>
         <Row>
-          {searchedBooks.map((book) => {
+          {searchedCoins.map((coin) => {
             return (
-              <Col key={book.bookId} md="4">
+              <Col key={coin.coinId} md="4">
                 <Card border="dark">
-                  {book.image ? (
+                  {coin.image ? (
                     <Card.Img
-                      src={book.image}
-                      alt={`The cover for ${book.title}`}
+                      src={coin.image}
+                      alt={`The cover for ${coin.title}`}
                       variant="top"
                     />
                   ) : null}
                   <Card.Body>
-                    <Card.Title>{book.title}</Card.Title>
-                    <p className="small">Authors: {book.authors}</p>
-                    <Card.Text>{book.description}</Card.Text>
+                    <Card.Title>{coin.title}</Card.Title>
+                    <p className="small">Authors: {coin.authors}</p>
+                    <Card.Text>{coin.description}</Card.Text>
                     {Auth.loggedIn() && (
                       <Button
-                        disabled={savedBookIds?.some(
-                          (savedBookId) => savedBookId === book.bookId
+                        disabled={savedCoinIds?.some(
+                          (savedCoinId) => savedCoinId === coin.coinId
                         )}
                         className="btn-block btn-info"
-                        onClick={() => handleSaveBook(book.bookId)}
+                        onClick={() => handleSaveCoin(coin.coinId)}
                       >
-                        {savedBookIds?.some(
-                          (savedBookId) => savedBookId === book.bookId
+                        {savedCoinIds?.some(
+                          (savedCoinId) => savedCoinId === coin.coinId
                         )
-                          ? "This book has already been saved!"
-                          : "Save this Book!"}
+                          ? "This coin has already been saved!"
+                          : "Save this Coin!"}
                       </Button>
                     )}
                   </Card.Body>
@@ -158,4 +158,4 @@ const SearchBooks = () => {
   );
 };
 
-export default SearchBooks;
+export default SearchCoins;
