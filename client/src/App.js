@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SearchBooks from "./pages/SearchBooks";
 import SavedBooks from "./pages/SavedBooks";
 import Navbar from "./components/Navbar";
+import Home from "./components/Home";
 import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
 import chakraTheme from '@chakra-ui/theme'
 
@@ -48,11 +49,13 @@ const theme = extendBaseTheme({
 function App() {
   return (
     <ChakraBaseProvider theme={theme}>
+
     <ApolloProvider client={client}>
       <Router>
         <>
           <Navbar />
           <Routes>
+            <Route exact index element={< Home />} />
             <Route exact path="/" element={<SearchBooks />} />
             <Route exact path="/saved" element={<SavedBooks />} />
             <Route render={() => <h1 className="display-2">Wrong page!</h1>} />
