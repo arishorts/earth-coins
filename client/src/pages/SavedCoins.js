@@ -5,7 +5,7 @@ import Auth from "../utils/auth";
 import { removeCoinId } from "../utils/localStorage";
 
 import { useMutation, useQuery } from "@apollo/client";
-import { REMOVE_BOOK } from "../utils/mutations";
+import { REMOVE_COIN } from "../utils/mutations";
 import { QUERY_ME } from "../utils/queries";
 
 const SavedCoins = () => {
@@ -16,7 +16,7 @@ const SavedCoins = () => {
 
   // Check if data is returning from the `QUERY_ME` query, then the `QUERY_SINGLE_PROFILE` query
   const profile = userData?.me || {};
-  const [removeCoin] = useMutation(REMOVE_BOOK, {
+  const [removeCoin] = useMutation(REMOVE_COIN, {
     update(cache, { data: { removeCoin } }) {
       try {
         const { me } = cache.readQuery({ query: QUERY_ME });
