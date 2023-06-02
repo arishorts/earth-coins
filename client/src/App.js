@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import SearchBooks from "./pages/SearchBooks";
-import SavedBooks from "./pages/SavedBooks";
+import SearchCoins from "./pages/SearchCoins";
+import SavedCoins from "./pages/SavedCoins";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
@@ -39,12 +39,12 @@ const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
-const { Button } = chakraTheme.components
+const { Button } = chakraTheme.components;
 const theme = extendBaseTheme({
   components: {
     Button,
   },
-})
+});
 
 function App() {
   return (
@@ -63,6 +63,7 @@ function App() {
         </>
       </Router>
     </ApolloProvider>
+
     </ChakraBaseProvider>
   );
 }
