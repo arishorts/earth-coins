@@ -13,8 +13,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@chakra-ui/react": "^2.7.0",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
     "apollo-server-express": "^3.11.1",
     "express": "^4.17.2",
+    "framer-motion": "^10.12.16",
     "graphql": "^16.3.0"
   },
   "devDependencies": {
