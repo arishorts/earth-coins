@@ -3,9 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SearchCoins from "./pages/SearchCoins";
 import SavedCoins from "./pages/SavedCoins";
 import Navbar from "./components/Navbar";
-import Home from "./components/Home";
-import { ChakraBaseProvider, extendBaseTheme } from "@chakra-ui/react";
-import chakraTheme from "@chakra-ui/theme";
+import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
+import chakraTheme from '@chakra-ui/theme'
+import { ThemeProvider, theme } from '@chakra-ui/core';
+import { Heading, Link } from "@chakra-ui/core";
+
+
 
 import {
   ApolloClient,
@@ -45,24 +48,26 @@ const theme = extendBaseTheme({
   },
 });
 
-function App() {
+function App( { Component, pageProps }) {
   return (
+  
     <ChakraBaseProvider theme={theme}>
-      <ApolloProvider client={client}>
-        <Router>
-          <>
-            <Navbar />
-            <Routes>
-              <Route exact path="/" element={<SearchCoins />} />
-              <Route exact path="/saved" element={<SavedCoins />} />
-              <Route
-                render={() => <h1 className="display-2">Wrong page!</h1>}
-              />
-            </Routes>
-          </>
-        </Router>
-      </ApolloProvider>
+    <ApolloProvider client={client}>
+      <Router>
+        <>
+          <Navbar />
+          <Routes>
+            <Route exact path="/" element={<SearchBooks />} />
+            <Route exact path="/saved" element={<SavedBooks />} />
+            <Route render={() => <h1 className="display-2">Wrong page!</h1>} />
+          </Routes>
+          <Component {...pageProps} />
+        </>
+      </Router>
+    </ApolloProvider>
+
     </ChakraBaseProvider>
+
   );
 }
 
