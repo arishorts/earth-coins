@@ -5,6 +5,8 @@ import SavedBooks from "./pages/SavedBooks";
 import Navbar from "./components/Navbar";
 import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
 import chakraTheme from '@chakra-ui/theme'
+import { ThemeProvider, theme } from '@chakra-ui/core';
+import { Heading, Link } from "@chakra-ui/core";
 
 
 import {
@@ -45,8 +47,9 @@ const theme = extendBaseTheme({
   },
 })
 
-function App() {
+function App( { Component, pageProps }) {
   return (
+  
     <ChakraBaseProvider theme={theme}>
     <ApolloProvider client={client}>
       <Router>
@@ -57,10 +60,12 @@ function App() {
             <Route exact path="/saved" element={<SavedBooks />} />
             <Route render={() => <h1 className="display-2">Wrong page!</h1>} />
           </Routes>
+          <Component {...pageProps} />
         </>
       </Router>
     </ApolloProvider>
     </ChakraBaseProvider>
+
   );
 }
 

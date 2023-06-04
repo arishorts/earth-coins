@@ -1,4 +1,6 @@
 import { Box, Text, Button, Image } from "@chakra-ui/react"
+import { Heading, Link } from "@chakra-ui/core";
+import { Link as RouterLink } from "react-router-dom";
 
 
 
@@ -39,8 +41,8 @@ const Home = () => {
           <circle cx="100" cy="100" r="85" fill="url(#engraved-pattern)" />
         </svg>
       </Box>
-    <Text fontSize="x3" size="2x1" color= "brown" mb={7}> Earth-Coins </Text>
-    <Text fontSize="x1" size="1x1" color= "blue" mb={4}> A dashboard that filters gecko-coin for eco-friendly cryptocurrencies. </Text>  
+    <Heading fontSize="x3" size="2x1" color= "brown" mb={7}> Earth-Coins </Heading>
+    <Text fontSize="x1" size="1x1" color= "blue" mb={4}> A dashboard that filters <Link href="https://www.coingecko.com" isExternal> Gecko Coins </Link> for eco-friendly cryptocurrencies. </Text>  
     <Button 
     colorScheme="whiteAlpha" 
     size="lg"
