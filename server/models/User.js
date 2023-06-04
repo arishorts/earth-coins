@@ -22,7 +22,12 @@ const userSchema = new Schema(
       required: true,
     },
     // set savedCoins to be an array of data that adheres to the coinSchema
-    savedCoins: [coinSchema],
+    savedCoins: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Coin'
+      }
+    ],
   },
   // set this to use virtual below
   {

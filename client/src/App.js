@@ -1,12 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import SearchBooks from "./pages/SearchBooks";
-import SavedBooks from "./pages/SavedBooks";
+import SearchCoins from "./pages/SearchCoins";
+import SavedCoins from "./pages/SavedCoins";
 import Navbar from "./components/Navbar";
 import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
 import chakraTheme from '@chakra-ui/theme'
 import { ThemeProvider, theme } from '@chakra-ui/core';
 import { Heading, Link } from "@chakra-ui/core";
+
 
 
 import {
@@ -40,12 +41,12 @@ const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
-const { Button } = chakraTheme.components
+const { Button } = chakraTheme.components;
 const theme = extendBaseTheme({
   components: {
     Button,
   },
-})
+});
 
 function App( { Component, pageProps }) {
   return (
@@ -64,6 +65,7 @@ function App( { Component, pageProps }) {
         </>
       </Router>
     </ApolloProvider>
+
     </ChakraBaseProvider>
 
   );
