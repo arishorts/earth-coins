@@ -25,6 +25,11 @@ const typeDefs = gql`
     user: User
   }
 
+  type SaveCoinResult {
+    user: User
+    coin: Coin
+  }
+
   input CoinContent {
     coinId: ID!
     authors: [String]
@@ -36,16 +41,14 @@ const typeDefs = gql`
 
   type Query {
     me: User
-  getAllCoins: [Coin]
-  getSavedCoins: [Coin]
+    getAllCoins: [Coin]
+    getSavedCoins: [Coin]
   }
-
- 
 
   type Mutation {
     login(email: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
-    saveCoin(content: CoinContent!): User
+    saveCoin(content: CoinContent!): SaveCoinResult
     removeCoin(coinId: ID!): User
   }
 `;
