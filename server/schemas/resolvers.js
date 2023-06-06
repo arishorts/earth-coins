@@ -2,7 +2,6 @@ const { User, Coin } = require("../models");
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
 
-
 const resolvers = {
   Query: {
     me: async (parent, args, context) => {
@@ -17,27 +16,29 @@ const resolvers = {
     },
     getAllCoins: async () => {
       const coins = await Coin.find({});
-      return coins.map(coin => ({
+      return coins.map((coin) => ({
         ...coin.toObject(),
-        _id: coin._id.toString()
+        _id: coin._id.toString(),
       }));
-    }
-    ,
-  getSavedCoins: async (parent, args, context) => {
-    if (context.user) {
-        const user = await User.findById(context.user._id).populate('savedCoins');
-        
+    },
+    getSavedCoins: async (parent, args, context) => {
+      if (context.user) {
+        const user = await User.findById(context.user._id).populate(
+          "savedCoins"
+        );
+
         if (user) {
-            return user.savedCoins;
+          return user.savedCoins;
         } else {
-            throw new Error('User not found!');
+          throw new Error("User not found!");
         }
-    } else {
-        throw new AuthenticationError('You need to be logged in!');
-    }
-  }
+      } else {
+        throw new AuthenticationError("You need to be logged in!");
+      }
+    },
+
   },
-  
+
   Mutation: {
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
@@ -64,6 +65,7 @@ const resolvers = {
     saveCoin: async (parent, { content }, context) => {
       if (context.user) {
         const { coinId } = content;
+
     
         // Check if the coin exists and update it or create a new one if it doesn't
         let coin = await Coin.findOneAndUpdate(
@@ -72,11 +74,13 @@ const resolvers = {
           { new: true, upsert: true } // use 'upsert: true' to create a new coin if it doesn't exist
         );
         
+
         // Add the coin ID to the user's savedCoins array
         const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
           { $addToSet: { savedCoins: coin._id } },
           { new: true }
+
         ).populate('savedCoins');
         
         // Populate users associated with the coin
@@ -84,10 +88,10 @@ const resolvers = {
         
         return { user: updatedUser, coin };
       }
-    
-      throw new AuthenticationError('You need to be logged in!');
+
+      throw new AuthenticationError("You need to be logged in!");
     },
-    
+
     removeCoin: async (parent, { coinId }, context) => {
       if (context.user) {
         const user = await User.findOneAndUpdate(

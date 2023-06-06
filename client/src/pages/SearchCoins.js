@@ -26,27 +26,24 @@ const SearchCoins = () => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    if (!searchInput) {
-      return false;
-    }
-
     try {
+      console.log("fetching....");
       const response = await fetch(
-        `https://www.googleapis.com/coins/v1/volumes?q=${searchInput}`
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=eco-friendly&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`
       );
-
+      console.log("fetched");
       if (!response.ok) {
         throw new Error("something went wrong!");
       }
 
-      const { items } = await response.json();
+      const items = await response.json();
+      console.log(items);
 
       const coinData = items.map((coin) => ({
         coinId: coin.id,
-        authors: coin.volumeInfo.authors || ["No author to display"],
-        title: coin.volumeInfo.title,
-        description: coin.volumeInfo.description,
-        image: coin.volumeInfo.imageLinks?.thumbnail || "",
+        current_price: coin.current_price,
+        image: coin.image,
+        symbol: coin.symbol,
       }));
 
       setSearchedCoins(coinData);
@@ -128,8 +125,8 @@ const SearchCoins = () => {
                   ) : null}
                   <Card.Body>
                     <Card.Title>{coin.title}</Card.Title>
-                    <p className="small">Authors: {coin.authors}</p>
-                    <Card.Text>{coin.description}</Card.Text>
+                    <p className="small">Token: {coin.symbol}</p>
+                    <Card.Text>{coin.coinId}</Card.Text>
                     {Auth.loggedIn() && (
                       <Button
                         disabled={savedCoinIds?.some(

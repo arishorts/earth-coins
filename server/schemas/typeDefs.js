@@ -2,15 +2,13 @@ const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
   type Coin {
-  _id: ID!
-  coinId: ID!
-  authors: [String]
-  description: String
-  title: String!
-  image: String
-  link: String
-  savedBy: [User]
-}
+    _id: ID!
+    coinId: ID!
+    current_price: Int
+    image: String
+    symbol: String
+    savedBy: [User]
+  }
 
   type User {
     _id: ID!
@@ -32,11 +30,9 @@ const typeDefs = gql`
 
   input CoinContent {
     coinId: ID!
-    authors: [String]
-    description: String
-    title: String!
+    current_price: Int
     image: String
-    link: String
+    symbol: String
   }
 
   type Query {
