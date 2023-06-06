@@ -35,7 +35,7 @@ const resolvers = {
     } else {
         throw new AuthenticationError('You need to be logged in!');
     }
-}
+  }
   },
   
   Mutation: {
@@ -65,22 +65,24 @@ const resolvers = {
       if (context.user) {
         const { coinId } = content;
     
-        // Check if the coin exists
-        let coin = await Coin.findOne({ coinId });
-    
-        // If the coin doesn't exist, create a new one
-        if (!coin) {
-          coin = await Coin.create(content);
-        }
-    
+        // Check if the coin exists and update it or create a new one if it doesn't
+        let coin = await Coin.findOneAndUpdate(
+          { coinId },
+          { $addToSet: { users: context.user._id }, $set: content }, // update users array and other fields
+          { new: true, upsert: true } // use 'upsert: true' to create a new coin if it doesn't exist
+        );
+        
         // Add the coin ID to the user's savedCoins array
         const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
           { $addToSet: { savedCoins: coin._id } },
           { new: true }
         ).populate('savedCoins');
-    
-        return updatedUser;
+        
+        // Populate users associated with the coin
+        coin = await Coin.findOne({ _id: coin._id }).populate('users');
+        
+        return { user: updatedUser, coin };
       }
     
       throw new AuthenticationError('You need to be logged in!');
@@ -98,6 +100,7 @@ const resolvers = {
       throw new AuthenticationError("You need to be logged in!");
     },
   },
+  
 };
 
 module.exports = resolvers;
