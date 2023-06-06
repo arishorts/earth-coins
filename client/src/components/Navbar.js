@@ -12,34 +12,46 @@ const AppNavbar = () => {
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" expand="lg">
-        <Container fluid>
-          <Navbar.Brand as={Link} to="/">
-            Coin Search
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbar" />
-          <Navbar.Collapse id="navbar" className="d-flex flex-row-reverse">
-            <Nav className="ml-auto d-flex">
-              <Nav.Link as={Link} to="/">
-                Search For Coins
-              </Nav.Link>
-              {/* if user is logged in show saved books and logout */}
-              {Auth.loggedIn() ? (
-                <>
-                  <Nav.Link as={Link} to="/saved">
-                    See Your Coins
-                  </Nav.Link>
-                  <Nav.Link onClick={Auth.logout}>Logout</Nav.Link>
-                </>
-              ) : (
-                <Nav.Link onClick={() => setShowModal(true)}>
-                  Login/Sign Up
-                </Nav.Link>
-              )}
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+      <nav className="bg-sky-950 text-white">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between py-4">
+            <Link to="/" className="text-xl font-bold">
+              Home
+            </Link>
+
+            <div className="lg:items-center" id="navbar">
+              <ul className="flex items-center justify-end flex-wrap">
+                <li className="mr-6 ml-6">
+                  <Link to="/" className="nav-link">
+                    Search For Coins
+                  </Link>
+                </li>
+                {/* if user is logged in show saved coins and logout */}
+                {Auth.loggedIn() && (
+                  <>
+                    <li className="mr-6">
+                      <Link to="/saved" className="nav-link">
+                        See Your Coins
+                      </Link>
+                    </li>
+                    <li onClick={Auth.logout} className="cursor-pointer">
+                      <span className="nav-link">Logout</span>
+                    </li>
+                  </>
+                )}
+                {!Auth.loggedIn() && (
+                  <li
+                    onClick={() => setShowModal(true)}
+                    className="cursor-pointer mr-6"
+                  >
+                    <span className="nav-link">Login/Sign Up</span>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
       {/* set modal data up */}
       <Modal
         size="lg"

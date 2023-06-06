@@ -23,6 +23,11 @@ const typeDefs = gql`
     user: User
   }
 
+  type SaveCoinResult {
+    user: User
+    coin: Coin
+  }
+
   input CoinContent {
     coinId: ID!
     current_price: Int
@@ -39,7 +44,7 @@ const typeDefs = gql`
   type Mutation {
     login(email: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
-    saveCoin(content: CoinContent!): User
+    saveCoin(content: CoinContent!): SaveCoinResult
     removeCoin(coinId: ID!): User
   }
 `;
