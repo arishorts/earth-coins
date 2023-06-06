@@ -94,13 +94,43 @@ const resolvers = {
 
     removeCoin: async (parent, { coinId }, context) => {
       if (context.user) {
+        // Find the coin in the database using the coinId
+        const coin = await Coin.findOne({ coinId });
+    
+        if (!coin) {
+          throw new Error("Coin not found");
+        }
+    
+        // Update the user document by pulling the coin's ObjectId from the savedCoins array
         const user = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $pull: { savedCoins: { coinId } } },
+          { $pull: { savedCoins: coin._id } },
           { new: true }
         );
+    
+        if (!user) {
+          throw new AuthenticationError("User not found");
+        }
+    
+        // Check if users field exists in the coin document and it is an array
+        if (Array.isArray(coin.users)) {
+          // Update the coin document
+          const users = coin.users.filter(userId => userId.toString() !== context.user._id.toString());
+    
+          if (users.length > 0) {
+            coin.users = users;
+            await coin.save();
+          } else {
+            await Coin.deleteOne({ _id: coin._id });
+          }
+        } else {
+          // If the users field does not exist or is not an array, delete the coin document
+          await Coin.deleteOne({ _id: coin._id });
+        }
+    
         return user;
       }
+    
       throw new AuthenticationError("You need to be logged in!");
     },
   },
