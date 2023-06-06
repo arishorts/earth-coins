@@ -21,15 +21,10 @@ const AppNavbar = () => {
 
             <div className="lg:items-center" id="navbar">
               <ul className="flex items-center justify-end flex-wrap">
-                <li className="mr-6 ml-6">
-                  <Link to="/" className="nav-link">
-                    Search For Coins
-                  </Link>
-                </li>
                 {/* if user is logged in show saved coins and logout */}
                 {Auth.loggedIn() && (
                   <>
-                    <li className="mr-6">
+                    <li className="mr-6 ml-6">
                       <Link to="/saved" className="nav-link">
                         See Your Coins
                       </Link>
