@@ -17,18 +17,20 @@ const SavedCoins = () => {
   const [removeCoin] = useMutation(REMOVE_COIN, {
     update(cache, { data: { removeCoin } }) {
       try {
-        const { me } = cache.readQuery({ query: QUERY_ME });
-        cache.writeQuery({
-          query: QUERY_ME,
-          data: {
-            me: {
-              ...me,
-              savedCoins: me.savedCoins.filter(
-                (coin) => coin.coinId !== removeCoin.coinId
-              ),
+        const { me } = cache.readQuery({ query: QUERY_ME }) || {};
+        if (me) {
+          cache.writeQuery({
+            query: QUERY_ME,
+            data: {
+              me: {
+                ...me,
+                savedCoins: me.savedCoins.filter(
+                  (coin) => coin.coinId !== removeCoin.coinId
+                ),
+              },
             },
-          },
-        });
+          });
+        }
       } catch (e) {
         console.error(e);
       }
@@ -42,12 +44,10 @@ const SavedCoins = () => {
     if (!token) {
       return false;
     }
-
     try {
       await removeCoin({
         variables: { coinId },
       });
-
       // upon success, remove coin's id from localStorage
       removeCoinId(coinId);
     } catch (err) {
@@ -62,9 +62,9 @@ const SavedCoins = () => {
 
   return (
     <>
-      <div class="py-10">
-        <Container class="flex justify-content-center">
-          <p class="text-3xl p-2 rounded-full text-sky-900 border-sky-900 border-2">
+      <div className="py-10">
+        <Container className="flex justify-content-center">
+          <p className="text-3xl p-2 rounded-full text-sky-900 border-sky-900 border-2">
             Viewing saved coins!
           </p>
         </Container>
