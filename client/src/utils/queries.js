@@ -8,6 +8,9 @@ export const QUERY_ME = gql`
       email
       savedCoins {
         coinId
+        current_price
+        image
+        symbol
       }
     }
   }

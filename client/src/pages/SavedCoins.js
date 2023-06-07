@@ -10,9 +10,7 @@ import { QUERY_ME } from "../utils/queries";
 
 const SavedCoins = () => {
   // create state to hold saved coinId values
-
   const { loading, data: userData } = useQuery(QUERY_ME);
-
   // Check if data is returning from the `QUERY_ME` query, then the `QUERY_SINGLE_PROFILE` query
   const profile = userData?.me || {};
   const [removeCoin] = useMutation(REMOVE_COIN, {
@@ -91,8 +89,8 @@ const SavedCoins = () => {
                     ) : null}
                     <Card.Body>
                       <Card.Title>{coin.title}</Card.Title>
-                      <p className="small">Authors: {coin.authors}</p>
-                      <Card.Text>{coin.description}</Card.Text>
+                      <p className="small">Token: {coin.symbol}</p>
+                      <Card.Text>{coin.coinId}</Card.Text>
                       <Button
                         className="btn-block btn-danger"
                         onClick={() => handleDeleteCoin(coin.coinId)}
