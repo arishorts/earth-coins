@@ -58,11 +58,14 @@ const SearchCoins = () => {
   // create function to handle saving a coin to our database
   const handleSaveCoin = async (coinId) => {
     // find the coin in `searchedCoins` state by the matching id
-    const coinToSave = searchedCoins.find((coin) => coin.coinId === coinId);
-
+    let coinToSave = searchedCoins.find((coin) => coin.coinId === coinId);
+  
+    // Ensure `current_price` is an integer
+    coinToSave.current_price = parseInt(coinToSave.current_price);
+  
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-
+  
     if (!token) {
       return false;
     }
@@ -72,7 +75,7 @@ const SearchCoins = () => {
           content: { ...coinToSave },
         },
       });
-
+  
       // if coin successfully saves to user's account, save coin id to state
       setSavedCoinIds([coinToSave.coinId, ...savedCoinIds]);
     } catch (err) {
