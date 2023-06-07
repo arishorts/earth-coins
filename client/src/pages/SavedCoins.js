@@ -62,9 +62,11 @@ const SavedCoins = () => {
 
   return (
     <>
-      <div fluid="true" className="text-light bg-dark p-5">
-        <Container>
-          <h1>Viewing saved coins!</h1>
+      <div class="py-10">
+        <Container class="flex justify-content-center">
+          <p class="text-3xl p-2 rounded-full text-sky-900 border-sky-900 border-2">
+            Viewing saved coins!
+          </p>
         </Container>
       </div>
       <Container>
