@@ -25,21 +25,35 @@ export const LOGIN_USER = gql`
 `;
 
 export const SAVE_COIN = gql`
-  mutation saveCoin($content: CoinContent!) {
-    saveCoin(content: $content) {
+mutation saveCoin($content: CoinContent!) {
+  saveCoin(content: $content) {
+    user {
       _id
       username
       email
       savedCoins {
-        title
+        _id
         coinId
-        authors
+        current_price
         image
-        description
-        link
+        symbol
+      }
+      coinCount
+    }
+    coin {
+      _id
+      coinId
+      current_price
+      image
+      symbol
+      savedBy {
+        _id
+        username
+        email
       }
     }
   }
+}
 `;
 
 export const REMOVE_COIN = gql`
