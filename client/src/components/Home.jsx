@@ -1,68 +1,32 @@
-import { Box, Text, Button, Image } from "@chakra-ui/react"
-import { Heading, Link } from "@chakra-ui/core";
-import { Link as RouterLink } from "react-router-dom";
+
+
+const Home = () => {   
+
+return ( 
+  <article class="min-h-screen min-w-screen">
+<div class="bg-gradient-to-r from-green-400 to-green-600">
+  <h1 class= "text-3xl font-bold text-brown-200"> EcoCryptoPortal </h1>
+  <h2 class="bg-gray-100 bg-opacity-75 p-4 rounded-lg">
+  <p class="text-gray-800">
+    Welcome to the EcoCryptoPortal! We have filtered Gecko-coins to give you all of the eco-friendly coins 
+    on the crypto exchange market. 
 
 
 
 
-const Home = () => {    
-<Box
-  w='100%'
-  h='200px'
-  bgGradient='linear(to-r, green.100, green.600, green.100)'
->
-<Box
-        bg="white"
-        rounded="full"
-        overflow="hidden"
-        position="relative"
-        boxSize="100%"
-      >
-        <Image src="/coin-image.jpg" alt="Coin Image" boxSize="100%" objectFit="cover" />
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 200 200"
-          position="absolute"
-          top="0"
-          left="0"
-          width="100%"
-          height="100%"
-        >
-          <defs>
-            <pattern
-              id="engraved-pattern"
-              patternUnits="userSpaceOnUse"
-              width="100%"
-              height="100%"
-            >
-              <image xlinkHref="/earth-engraved.jpg" width="200" height="200" />
-            </pattern>
-          </defs>
-          <circle cx="100" cy="100" r="85" fill="url(#engraved-pattern)" />
-        </svg>
-      </Box>
-    <Heading fontSize="x3" size="2x1" color= "brown" mb={7}> Earth-Coins </Heading>
-    <Text fontSize="x1" size="1x1" color= "blue" mb={4}> A dashboard that filters <Link href="https://www.coingecko.com" isExternal> Gecko Coins </Link> for eco-friendly cryptocurrencies. </Text>  
-    <Button 
-    colorScheme="whiteAlpha" 
-    size="lg"
-    padding="2px 4px"
-    borderWidth= "3px"
-    borderColor="green"
-    > 
-        Login
-    </Button>
-    <Button 
-    colorScheme="whiteSmoke" 
-    size="lg"
-    padding="2px 4px"
-    borderWidth="2px"
-    borderColor="green">
-        Sign-Up
-    </Button>
-    </Box>
+    <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="90" fill="#ccc" stroke="#000" stroke-width="2" />
+    <circle cx="100" cy="100" r="60" fill="#fff" />
+    <circle cx="100" cy="100" r="40" fill="#0f0" />
+    <circle cx="100" cy="100" r="25" fill="#00f" />
+    </svg>
+  </p>
+</h2>
+</div>
+</article>
 
-};
+
+)};
 
 
 export default Home;
