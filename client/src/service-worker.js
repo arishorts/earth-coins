@@ -69,24 +69,3 @@ self.addEventListener("message", (event) => {
     self.skipWaiting();
   }
 });
-
-// Any other custom service worker logic can go here.
-self.addEventListener("install", function (event) {
-  event.waitUntil(
-    caches.open("your-app-cache").then(function (cache) {
-      return cache.addAll([
-        "/",
-        "/index.html",
-        // Add more files and assets to cache as needed
-      ]);
-    })
-  );
-});
-
-self.addEventListener("fetch", function (event) {
-  event.respondWith(
-    caches.match(event.request).then(function (response) {
-      return response || fetch(event.request);
-    })
-  );
-});
