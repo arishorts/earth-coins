@@ -18,7 +18,7 @@ const SearchCoins = () => {
   // set up useEffect hook to save `savedCoinIds` list to localStorage on component unmount
   useEffect(() => {
     return () => saveCoinIds(savedCoinIds);
-  });
+  }, [savedCoinIds]);
 
   // useEffect to show coins
   useEffect(() => {

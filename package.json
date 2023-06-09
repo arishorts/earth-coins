@@ -1,5 +1,5 @@
 {
-  "name": "googlebooks-app",
+  "name": "eco-crypto-portal",
   "version": "1.0.0",
   "description": "",
   "main": "server/server.js",
@@ -23,6 +23,6 @@
     "graphql": "^16.3.0"
   },
   "devDependencies": {
-    "concurrently": "^5.1.0"
+    "concurrently": "^5.3.0"
   }
 }

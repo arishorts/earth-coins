@@ -10,7 +10,7 @@ import { QUERY_ME } from "../utils/queries";
 
 const SavedCoins = () => {
   // create state to hold saved coinId values
-  const { loading, data: userData } = useQuery(QUERY_ME);
+  const { loading, data: userData, refetch } = useQuery(QUERY_ME);
 
   // Check if data is returning from the `QUERY_ME` query, then the `QUERY_SINGLE_PROFILE` query
   const profile = userData?.me || {};
@@ -50,6 +50,7 @@ const SavedCoins = () => {
       });
       // upon success, remove coin's id from localStorage
       removeCoinId(coinId);
+      refetch();
     } catch (err) {
       console.error(err);
     }
