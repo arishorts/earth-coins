@@ -14,7 +14,7 @@ return (
 
 
 
-    <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+    <svg class="" xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
     <circle cx="100" cy="100" r="90" fill="#ccc" stroke="#000" stroke-width="2" />
     <circle cx="100" cy="100" r="60" fill="#fff" />
     <circle cx="100" cy="100" r="40" fill="#0f0" />
