@@ -44,17 +44,5 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <script>
-      import { Workbox } from "workbox-window";
-
-      // Check if service workers are supported
-      if ("serviceWorker" in navigator) {
-        // register workbox service worker
-        const workboxSW = new Workbox("./src-sw.js");
-        workboxSW.register();
-      } else {
-        console.error("Service workers are not supported in this browser.");
-      }
-    </script>
   </body>
 </html>
