@@ -6,14 +6,11 @@ export const QUERY_ME = gql`
       _id
       username
       email
-      coinCount
       savedCoins {
-        authors
-        image
-        description
         coinId
-        title
-        link
+        current_price
+        image
+        symbol
       }
     }
   }

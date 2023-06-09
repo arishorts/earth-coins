@@ -10,8 +10,6 @@ import { SAVE_COIN } from "../utils/mutations";
 const SearchCoins = () => {
   // create state for holding returned google api data
   const [searchedCoins, setSearchedCoins] = useState([]);
-  // create state for holding our search field data
-  const [searchInput, setSearchInput] = useState("");
 
   // create state to hold saved coinId values
   const [savedCoinIds, setSavedCoinIds] = useState(getSavedCoinIds());
@@ -26,11 +24,9 @@ const SearchCoins = () => {
   useEffect(() => {
     const fetchCoinData = async () => {
       try {
-        console.log("fetching....");
         const response = await fetch(
           `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=eco-friendly&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`
         );
-        console.log("fetched");
         if (!response.ok) {
           throw new Error("something went wrong!");
         }
@@ -46,7 +42,6 @@ const SearchCoins = () => {
         }));
 
         setSearchedCoins(coinData);
-        setSearchInput("");
       } catch (err) {
         console.error(err);
       }
@@ -58,7 +53,9 @@ const SearchCoins = () => {
   // create function to handle saving a coin to our database
   const handleSaveCoin = async (coinId) => {
     // find the coin in `searchedCoins` state by the matching id
-    const coinToSave = searchedCoins.find((coin) => coin.coinId === coinId);
+    let coinToSave = searchedCoins.find((coin) => coin.coinId === coinId);
+    // Ensure `current_price` is an integer
+    coinToSave.current_price = parseInt(coinToSave.current_price);
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -89,14 +86,9 @@ const SearchCoins = () => {
               <Col key={coin.coinId} md="4">
                 <Card border="dark">
                   {coin.image ? (
-                    <Card.Img
-                      src={coin.image}
-                      alt={`The cover for ${coin.title}`}
-                      variant="top"
-                    />
+                    <Card.Img src={coin.image} variant="top" />
                   ) : null}
                   <Card.Body>
-                    <Card.Title>{coin.title}</Card.Title>
                     <p className="small">Token: {coin.symbol}</p>
                     <Card.Text>{coin.coinId}</Card.Text>
                     {Auth.loggedIn() && (

@@ -27,16 +27,30 @@ export const LOGIN_USER = gql`
 export const SAVE_COIN = gql`
   mutation saveCoin($content: CoinContent!) {
     saveCoin(content: $content) {
-      _id
-      username
-      email
-      savedCoins {
-        title
+      user {
+        _id
+        username
+        email
+        savedCoins {
+          _id
+          coinId
+          current_price
+          image
+          symbol
+        }
+        coinCount
+      }
+      coin {
+        _id
         coinId
-        authors
+        current_price
         image
-        description
-        link
+        symbol
+        savedBy {
+          _id
+          username
+          email
+        }
       }
     }
   }
@@ -50,12 +64,7 @@ export const REMOVE_COIN = gql`
       email
       coinCount
       savedCoins {
-        title
         coinId
-        authors
-        image
-        description
-        link
       }
     }
   }

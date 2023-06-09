@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 const bcrypt = require("bcrypt");
 
 // import schema from Coin.js
-const coinSchema = require("./Coin");
+const { coinSchema } = require("./Coin");
 
 const userSchema = new Schema(
   {
@@ -22,12 +22,7 @@ const userSchema = new Schema(
       required: true,
     },
     // set savedCoins to be an array of data that adheres to the coinSchema
-    savedCoins: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Coin'
-      }
-    ],
+    savedCoins: [coinSchema],
   },
   // set this to use virtual below
   {

@@ -90,6 +90,7 @@ const LoginForm = () => {
           disabled={!(userFormData.email && userFormData.password)}
           type="submit"
           variant="success"
+          className="custom-submit-button bg-sky-950 text-white hover:bg-sky-700 border-none"
         >
           Submit
         </Button>

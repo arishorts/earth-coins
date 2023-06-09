@@ -1,0 +1,13 @@
+.custom-submit-button:disabled {
+  background-color: gray;
+  color: white;
+}
+
+.custom-nav {
+  color: #082f49 !important;
+}
+
+.nav-link.active {
+  background-color: #082f49 !important;
+  color: white !important;
+}
