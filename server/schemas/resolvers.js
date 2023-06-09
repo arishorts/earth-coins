@@ -74,11 +74,11 @@ const resolvers = {
         // Add the coin ID to the user's savedCoins array
         const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { savedCoins: coin._id } },
+          { $push: { savedCoins: content } },
           { new: true }
         ).populate("savedCoins");
 
-        // Populate users associated with the coin
+        // // Populate users associated with the coin
         coin = await Coin.findOne({ _id: coin._id }).populate("users");
 
         return { user: updatedUser, coin };
@@ -99,7 +99,7 @@ const resolvers = {
         // Update the user document by pulling the coin's ObjectId from the savedCoins array
         const user = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $pull: { savedCoins: coin._id } },
+          { $pull: { savedCoins: { coinId } } },
           { new: true }
         );
 

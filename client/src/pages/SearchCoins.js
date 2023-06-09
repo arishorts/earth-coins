@@ -10,8 +10,6 @@ import { SAVE_COIN } from "../utils/mutations";
 const SearchCoins = () => {
   // create state for holding returned google api data
   const [searchedCoins, setSearchedCoins] = useState([]);
-  // create state for holding our search field data
-  const [searchInput, setSearchInput] = useState("");
 
   // create state to hold saved coinId values
   const [savedCoinIds, setSavedCoinIds] = useState(getSavedCoinIds());
@@ -44,7 +42,6 @@ const SearchCoins = () => {
         }));
 
         setSearchedCoins(coinData);
-        setSearchInput("");
       } catch (err) {
         console.error(err);
       }
@@ -57,7 +54,6 @@ const SearchCoins = () => {
   const handleSaveCoin = async (coinId) => {
     // find the coin in `searchedCoins` state by the matching id
     let coinToSave = searchedCoins.find((coin) => coin.coinId === coinId);
-
     // Ensure `current_price` is an integer
     coinToSave.current_price = parseInt(coinToSave.current_price);
 
@@ -90,14 +86,9 @@ const SearchCoins = () => {
               <Col key={coin.coinId} md="4">
                 <Card border="dark">
                   {coin.image ? (
-                    <Card.Img
-                      src={coin.image}
-                      alt={`The cover for ${coin.title}`}
-                      variant="top"
-                    />
+                    <Card.Img src={coin.image} variant="top" />
                   ) : null}
                   <Card.Body>
-                    <Card.Title>{coin.title}</Card.Title>
                     <p className="small">Token: {coin.symbol}</p>
                     <Card.Text>{coin.coinId}</Card.Text>
                     {Auth.loggedIn() && (
