@@ -1,7 +1,13 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [],
+  "short_name": "eco-coin-portal",
+  "name": "eco-coin-portal",
+  "icons": [
+    {
+      "src": "favicon-16x16.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
