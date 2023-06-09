@@ -15,7 +15,7 @@ const AppNavbar = () => {
       <nav className="bg-sky-950 text-white">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between py-4">
-            <Link to="/" className="text-xl font-bold">
+            <Link to="/" className="text-xl font-bold hover:text-sky-500">
               Home
             </Link>
 
@@ -25,12 +25,14 @@ const AppNavbar = () => {
                 {Auth.loggedIn() && (
                   <>
                     <li className="mr-6 ml-6">
-                      <Link to="/saved" className="nav-link">
+                      <Link to="/saved" className="nav-link hover:text-sky-500">
                         See Your Coins
                       </Link>
                     </li>
                     <li onClick={Auth.logout} className="cursor-pointer">
-                      <span className="nav-link">Logout</span>
+                      <span className="nav-link hover:text-sky-500">
+                        Logout
+                      </span>
                     </li>
                   </>
                 )}

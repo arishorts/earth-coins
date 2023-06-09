@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SearchCoins from "./pages/SearchCoins";
 import SavedCoins from "./pages/SavedCoins";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 import {
   ApolloClient,
@@ -42,13 +43,20 @@ function App() {
     <ApolloProvider client={client}>
       <Router>
         <>
-          <Navbar />
-          <Routes>
-            <Route exact path="/" element={<SearchCoins />} />
-            <Route exact path="/saved" element={<SavedCoins />} />
-            <Route render={() => <h1 className="display-2">Wrong page!</h1>} />
-          </Routes>
-          {/* <Component {...pageProps} /> */}
+          <div className="app-container">
+            <div className="content-wrap">
+              <Navbar />
+              <Routes>
+                <Route exact path="/" element={<SearchCoins />} />
+                <Route exact path="/saved" element={<SavedCoins />} />
+                <Route
+                  render={() => <h1 className="display-2">Wrong page!</h1>}
+                />
+              </Routes>
+            </div>
+            <Footer />
+            {/* <Component {...pageProps} /> */}
+          </div>
         </>
       </Router>
     </ApolloProvider>

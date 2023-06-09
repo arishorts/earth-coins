@@ -64,7 +64,7 @@ const SavedCoins = () => {
     <>
       <div className="py-10">
         <Container className="flex justify-content-center">
-          <p className="text-3xl p-2 rounded-full text-sky-900 border-sky-900 border-2">
+          <p className="text-3xl py-2 px-4 bg-stone-700 rounded-full text-white border-stone-700 border-2">
             Viewing saved coins!
           </p>
         </Container>
