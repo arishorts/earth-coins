@@ -32,6 +32,7 @@ const SearchCoins = () => {
         }
 
         const items = await response.json();
+        console.log(items);
 
         const coinData = items.map((coin) => ({
           coinId: coin.id,
@@ -96,28 +97,32 @@ const SearchCoins = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {searchedCoins.map((coin) => (
             <div key={coin.coinId} className="flex justify-center">
-              <Card border="dark" className="w-full">
-                {coin.image && <Card.Img src={coin.image} variant="top" />}
-                <Card.Body className="flex flex-col justify-between">
-                  <p className="text-sm">Token: {coin.symbol}</p>
-                  <Card.Text>{coin.coinId}</Card.Text>
-                  {Auth.loggedIn() && (
-                    <Button
-                      disabled={savedCoinIds?.some(
-                        (savedCoinId) => savedCoinId === coin.coinId
-                      )}
-                      className="btn-block btn-info"
+              <div className="border border-gray-300 rounded-lg p-4 flex flex-col justify-between">
+                {coin.image && (
+                  <img src={coin.image} alt={coin.title} className="mb-4" />
+                )}
+                <h4>{coin.title}</h4>
+                <p className="text-sm">Token: {coin.symbol}</p>
+                <p>{coin.coinId}</p>
+                <div className="flex items-center justify-between">
+                  <p className="mb-0">Current Price: {coin.current_price}</p>
+                  {/* Save button */}
+                  {savedCoinIds?.some(
+                    (savedCoinId) => savedCoinId === coin.coinId
+                  ) ? (
+                    <button className="bg-blue-500 hover:bg-blue-600 text-white text-center mx-3 py-1 px-3 rounded-full">
+                      Saved!
+                    </button>
+                  ) : (
+                    <button
+                      className="bg-blue-500 hover:bg-blue-600 text-white text-center py-2 px-4 rounded-full"
                       onClick={() => handleSaveCoin(coin.coinId)}
                     >
-                      {savedCoinIds?.some(
-                        (savedCoinId) => savedCoinId === coin.coinId
-                      )
-                        ? "This coin has already been saved!"
-                        : "Save this Coin!"}
-                    </Button>
+                      Save this Coin!
+                    </button>
                   )}
-                </Card.Body>
-              </Card>
+                </div>
+              </div>
             </div>
           ))}
         </div>
