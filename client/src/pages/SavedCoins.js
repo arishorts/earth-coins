@@ -84,7 +84,7 @@ const SavedCoins = () => {
                   <p className="text-sm">Token: {coin.symbol}</p>
                   <p>{coin.coinId}</p>
                   <button
-                    className="bg-red-500 hover:bg-red-600 text-white text-center py-2 px-4 rounded-full w-full mt-4"
+                    className="bg-red-900 hover:bg-red-700 transition duration-400 text-white text-center py-2 px-4 rounded-full w-full mt-4"
                     onClick={() => handleDeleteCoin(coin.coinId)}
                   >
                     Delete
