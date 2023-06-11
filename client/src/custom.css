@@ -35,6 +35,25 @@ footer {
   margin-left: 6px;
 }
 
+.save-new-coin {
+  background: #417b5a;
+  border-color: #417b5a;
+}
+
+.save-new-coin:hover {
+  background: #5fbf88;
+  border-color: #5fbf88;
+}
+
+.already-saved-coin {
+  color: white !important;
+}
+
+.already-saved-coin {
+  background: #0c4a6e !important;
+  border-color: #0c4a6e !important;
+}
+
 @media (max-width: 325px) {
   .footer {
     font-size: 9px;

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Container, Col, Button, Card, Row } from "react-bootstrap";
 
 import Auth from "../utils/auth";
 import { saveCoinIds, getSavedCoinIds } from "../utils/localStorage";
@@ -105,20 +104,26 @@ const SearchCoins = () => {
                 <p className="text-sm">Token: {coin.symbol}</p>
                 <p>{coin.coinId}</p>
                 <div className="flex items-center justify-between">
-                  <p className="mb-0">Current Price: {coin.current_price}</p>
+                  <p className="mb-0">
+                    Current Price: {coin.current_price.toFixed(5)}
+                  </p>
                   {/* Save button */}
+
                   {savedCoinIds?.some(
                     (savedCoinId) => savedCoinId === coin.coinId
                   ) ? (
-                    <button className="bg-blue-500 hover:bg-blue-600 text-white text-center mx-3 py-1 px-3 rounded-full">
-                      Saved!
+                    <button
+                      disabled
+                      className="text-white text-center mx-3 py-1 px-3 rounded-full already-saved-coin"
+                    >
+                      Saved
                     </button>
                   ) : (
                     <button
-                      className="bg-blue-500 hover:bg-blue-600 text-white text-center py-2 px-4 rounded-full"
+                      className="text-white text-center py-1 px-3 rounded-full save-new-coin"
                       onClick={() => handleSaveCoin(coin.coinId)}
                     >
-                      Save this Coin!
+                      Save
                     </button>
                   )}
                 </div>
