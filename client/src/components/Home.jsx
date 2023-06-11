@@ -5,7 +5,7 @@ const Home = () => {
 return ( 
   <article class="min-h-screen min-w-screen">
 <div class="bg-gradient-to-r from-green-400 to-green-600">
-  <h1 class= "text-3xl font-bold text-brown-200"> EcoCryptoPortal </h1>
+  <h1 class= "text-3xl font-bold text-lightbrown-200 text-center"> EcoCryptoPortal </h1>
   <h2 class="bg-gray-100 bg-opacity-75 p-4 rounded-lg">
   <p class="text-blue-500 text-center font-serif">
     Welcome to the EcoCryptoPortal! Find all the crypto currencies that are run by proof-of-stake (PoS)! 
