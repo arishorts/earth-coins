@@ -4,6 +4,7 @@ import SearchCoins from "./pages/SearchCoins";
 import SavedCoins from "./pages/SavedCoins";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import Home from "./components/Home"
 
 import {
   ApolloClient,
@@ -47,6 +48,7 @@ function App() {
             <div className="content-wrap">
               <Navbar />
               <Routes>
+                <Route exact path="/" element={<Home />} /> 
                 <Route exact path="/" element={<SearchCoins />} />
                 <Route exact path="/saved" element={<SavedCoins />} />
                 <Route
