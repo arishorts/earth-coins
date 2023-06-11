@@ -1,42 +1,50 @@
-# Eco-Coin-Portal
+# Eco Crypto Portal ![alt text](https://img.shields.io/badge/License-MIT-blue.svg)
 
-### User Story
+## Description
 
-As a user I want to see tabular data about eco-friendly cryptocurrnecies
-I want to add coins to watch on my dashboard and see three data points about chosen coins
-So that I can keep track of my favorite eco-friendly crytocurrencies.
+Eco Crypto Portal lets the user view their favorite eco friendly cyrptocurrencies. The user will be able to sign up or log into their account to view their favorite eco friendly cryptocurrencies. Users will be able to view the market data of their chosen coins on their saved coins page. On the deployed application, the user can install a PWA on their local device.
 
-### Acceptance Criteria
+## Table of Contents
 
-Given the MERN FullStack web application
-WHEN I Signup and login
-THEN I am presented with a list of coins to watch
-WHEN I click on the desired coins they are added to my dashboard
-THEN I can navigate to my dashboard and see my coins
-WHEN I hover over my selected coins
-THEN I can see three data points about the coin
+- [Installation](#installation)
+- [Usage](#usage)
+- [Badges](#badges)
+- [Contribution](#contribution)
+- [License](#license)
+- [Contact](#contact)
 
-## Built With
+---
 
-MongoDB
-Express
-React
-Node.js
-Chakra UI
-Heroku
-Mongoose ODM
+## Installation
 
-## Features
+No installation required. The deployed application is available at TEXT.
 
-Fully Responsive
-Polished with Chakra UI
-JWT Authentication
+---
 
-## Getting Started
+## Usage
 
-Clone from Github and ensure you have express and node installed.
+The website uses authentication and authorization to allow users to save and delete coins to their profile.
 
-## Installation and Setup Instructions
+---
 
-`npm install`
-`npm start`
+## Badges
+
+![badmath](https://img.shields.io/badge/javascript-60%25-brightgreen)<br>
+![badmath](https://img.shields.io/badge/css-20%25-orange)<br>
+![badmath](https://img.shields.io/badge/html-20%25-purple)
+
+## Contribution
+
+If you'd like to contribeute, refer to the Contributor Covenant: https://www.contributor-covenant.org
+
+---
+
+## License
+
+MIT
+
+---
+
+## Contact
+
+Please reach out to arieljschwartz@gmail.com, joey.tranvik@gmail.com, TEXT, or TEXT if you have any questions.

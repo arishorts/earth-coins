@@ -1,6 +1,3 @@
-// import React, { useState } from "react";
-import { Container, Card, Button, Row, Col } from "react-bootstrap";
-
 import Auth from "../utils/auth";
 import { removeCoinId } from "../utils/localStorage";
 
@@ -12,7 +9,7 @@ const SavedCoins = () => {
   // create state to hold saved coinId values
   const { loading, data: userData, refetch } = useQuery(QUERY_ME);
 
-  // Check if data is returning from the `QUERY_ME` query, then the `QUERY_SINGLE_PROFILE` query
+  // Check if data is returning from the `QUERY_ME` query
   const profile = userData?.me || {};
   const [removeCoin] = useMutation(REMOVE_COIN, {
     update(cache, { data: { removeCoin } }) {
@@ -64,50 +61,39 @@ const SavedCoins = () => {
   return (
     <>
       <div className="py-10">
-        <Container className="flex justify-content-center">
-          <p className="text-3xl py-2 px-4 bg-stone-700 rounded-full text-white border-stone-700 border-2">
-            Viewing saved coins!
+        <div className="container mx-auto text-center">
+          <p className="text-3xl inline-block p-2 rounded-full text-sky-900 border-sky-900 border-2">
+            {profile?.coinCount
+              ? `Viewing ${profile.coinCount} saved ${
+                  profile.coinCount === 1 ? "coin!" : "coins!"
+                }`
+              : "You have no saved coins!"}
           </p>
-        </Container>
+        </div>
       </div>
-      <Container>
-        <h2 className="pt-5">
-          {profile?.coinCount
-            ? `Viewing ${profile.coinCount} saved ${
-                profile.coinCount === 1 ? "coin" : "coins"
-              }:`
-            : "You have no saved coins!"}
-        </h2>
-        <Row>
+      <div className="container">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {profile?.savedCoins &&
-            profile.savedCoins.map((coin) => {
-              return (
-                <Col key={coin.coinId} md="4">
-                  <Card border="dark">
-                    {coin.image ? (
-                      <Card.Img
-                        src={coin.image}
-                        alt={`The cover for ${coin.title}`}
-                        variant="top"
-                      />
-                    ) : null}
-                    <Card.Body>
-                      <Card.Title>{coin.title}</Card.Title>
-                      <p className="small">Token: {coin.symbol}</p>
-                      <Card.Text>{coin.coinId}</Card.Text>
-                      <Button
-                        className="btn-block btn-danger"
-                        onClick={() => handleDeleteCoin(coin.coinId)}
-                      >
-                        Delete this Coin!
-                      </Button>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              );
-            })}
-        </Row>
-      </Container>
+            profile.savedCoins.map((coin) => (
+              <div key={coin.coinId} className="flex justify-center">
+                <div className="border border-gray-300 rounded-lg p-4 flex flex-col justify-between">
+                  {coin.image && (
+                    <img src={coin.image} alt={coin.title} className="mb-4" />
+                  )}
+                  <h4>{coin.title}</h4>
+                  <p className="text-sm">Token: {coin.symbol}</p>
+                  <p>{coin.coinId}</p>
+                  <button
+                    className="bg-red-900 hover:bg-red-700 transition duration-400 text-white text-center py-2 px-4 rounded-full w-full mt-4"
+                    onClick={() => handleDeleteCoin(coin.coinId)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
     </>
   );
 };

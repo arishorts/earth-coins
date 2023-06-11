@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Container, Col, Button, Card, Row } from "react-bootstrap";
 
 import Auth from "../utils/auth";
 import { saveCoinIds, getSavedCoinIds } from "../utils/localStorage";
@@ -79,40 +78,60 @@ const SearchCoins = () => {
 
   return (
     <>
-      <Container>
-        <Row>
-          {searchedCoins.map((coin) => {
-            return (
-              <Col key={coin.coinId} md="4">
-                <Card border="dark">
-                  {coin.image ? (
-                    <Card.Img src={coin.image} variant="top" />
-                  ) : null}
-                  <Card.Body>
-                    <p className="small">Token: {coin.symbol}</p>
-                    <Card.Text>{coin.coinId}</Card.Text>
-                    {Auth.loggedIn() && (
-                      <Button
-                        disabled={savedCoinIds?.some(
-                          (savedCoinId) => savedCoinId === coin.coinId
-                        )}
-                        className="btn-block btn-info"
-                        onClick={() => handleSaveCoin(coin.coinId)}
-                      >
-                        {savedCoinIds?.some(
-                          (savedCoinId) => savedCoinId === coin.coinId
-                        )
-                          ? "This coin has already been saved!"
-                          : "Save this Coin!"}
-                      </Button>
-                    )}
-                  </Card.Body>
-                </Card>
-              </Col>
-            );
-          })}
-        </Row>
-      </Container>
+      <div className="container mx-auto">
+        <div className="py-10">
+          <div className="container mx-auto text-center">
+            <p className="text-3xl inline-block p-2 rounded-full text-sky-900 border-sky-900 border-2">
+              Eco Coin Portal
+            </p>
+          </div>
+          <p className="text-center text-xl">
+            The first website promoting support for Eco-friendly Cryptocurrency.
+          </p>
+          <p className="text-center text-xl">
+            Login and save coins to your profile.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {searchedCoins.map((coin) => (
+            <div key={coin.coinId} className="flex justify-center">
+              <div className="border border-gray-300 rounded-lg p-4 flex flex-col justify-between">
+                {coin.image && (
+                  <img src={coin.image} alt={coin.title} className="mb-4" />
+                )}
+                <h4>{coin.title}</h4>
+                <p className="text-sm">Token: {coin.symbol}</p>
+                <p>{coin.coinId}</p>
+                <div className="flex items-center justify-between">
+                  <p className="mb-0">
+                    Current Price: {coin.current_price.toFixed(5)}
+                  </p>
+                  {/* Save button */}
+
+                  {savedCoinIds?.some(
+                    (savedCoinId) => savedCoinId === coin.coinId
+                  ) ? (
+                    <button
+                      disabled
+                      className="text-white text-center mx-3 py-1 px-3 rounded-full already-saved-coin"
+                    >
+                      Saved
+                    </button>
+                  ) : (
+                    <button
+                      className="text-white text-center py-1 px-3 rounded-full save-new-coin"
+                      onClick={() => handleSaveCoin(coin.coinId)}
+                    >
+                      Save
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </>
   );
 };

@@ -10,7 +10,7 @@ const Footer = () => {
           <a
             href="https://www.coingecko.com/"
             target="_blank"
-            className="font-bold transition duration-300 hover:text-sky-500"
+            className="font-bold transition duration-400 hover:text-sky-500"
           >
             CoinGecko
           </a>
