@@ -32,7 +32,6 @@ const SearchCoins = () => {
         }
 
         const items = await response.json();
-        console.log(items);
 
         const coinData = items.map((coin) => ({
           coinId: coin.id,
@@ -79,40 +78,50 @@ const SearchCoins = () => {
 
   return (
     <>
-      <Container>
-        <Row>
-          {searchedCoins.map((coin) => {
-            return (
-              <Col key={coin.coinId} md="4">
-                <Card border="dark">
-                  {coin.image ? (
-                    <Card.Img src={coin.image} variant="top" />
-                  ) : null}
-                  <Card.Body>
-                    <p className="small">Token: {coin.symbol}</p>
-                    <Card.Text>{coin.coinId}</Card.Text>
-                    {Auth.loggedIn() && (
-                      <Button
-                        disabled={savedCoinIds?.some(
-                          (savedCoinId) => savedCoinId === coin.coinId
-                        )}
-                        className="btn-block btn-info"
-                        onClick={() => handleSaveCoin(coin.coinId)}
-                      >
-                        {savedCoinIds?.some(
-                          (savedCoinId) => savedCoinId === coin.coinId
-                        )
-                          ? "This coin has already been saved!"
-                          : "Save this Coin!"}
-                      </Button>
-                    )}
-                  </Card.Body>
-                </Card>
-              </Col>
-            );
-          })}
-        </Row>
-      </Container>
+      <div className="container mx-auto">
+        <div className="py-10">
+          <div className="container mx-auto text-center">
+            <p className="text-3xl inline-block p-2 rounded-full text-sky-900 border-sky-900 border-2">
+              Eco Coin Portal
+            </p>
+          </div>
+          <p className="text-center text-xl">
+            The first website promoting support for Eco-friendly Cryptocurrency.
+          </p>
+          <p className="text-center text-xl">
+            Login and save coins to your profile.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {searchedCoins.map((coin) => (
+            <div key={coin.coinId} className="flex justify-center">
+              <Card border="dark" className="w-full">
+                {coin.image && <Card.Img src={coin.image} variant="top" />}
+                <Card.Body className="flex flex-col justify-between">
+                  <p className="text-sm">Token: {coin.symbol}</p>
+                  <Card.Text>{coin.coinId}</Card.Text>
+                  {Auth.loggedIn() && (
+                    <Button
+                      disabled={savedCoinIds?.some(
+                        (savedCoinId) => savedCoinId === coin.coinId
+                      )}
+                      className="btn-block btn-info"
+                      onClick={() => handleSaveCoin(coin.coinId)}
+                    >
+                      {savedCoinIds?.some(
+                        (savedCoinId) => savedCoinId === coin.coinId
+                      )
+                        ? "This coin has already been saved!"
+                        : "Save this Coin!"}
+                    </Button>
+                  )}
+                </Card.Body>
+              </Card>
+            </div>
+          ))}
+        </div>
+      </div>
     </>
   );
 };
