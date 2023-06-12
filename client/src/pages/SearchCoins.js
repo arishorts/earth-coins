@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 
 import Auth from "../utils/auth";
 import { saveCoinIds, getSavedCoinIds } from "../utils/localStorage";
-
 import { useMutation } from "@apollo/client";
 import { SAVE_COIN } from "../utils/mutations";
 
@@ -88,7 +87,7 @@ const SearchCoins = () => {
         <div className="py-10">
           <div className="container mx-auto text-center">
             <p className="text-3xl inline-block p-2 rounded-full text-sky-900 border-sky-900 border-2">
-              Eco Coin Portal
+              Eco Crypto Portal
             </p>
           </div>
           <p className="text-center text-xl">
@@ -118,24 +117,24 @@ const SearchCoins = () => {
                     Current Price: {coinPrices[coin.coinId]?.toFixed(5)}
                   </p>
                   {/* Save button */}
-
-                  {savedCoinIds?.some(
-                    (savedCoinId) => savedCoinId === coin.coinId
-                  ) ? (
-                    <button
-                      disabled
-                      className="text-white text-center mx-3 py-1 px-3 rounded-full already-saved-coin"
-                    >
-                      Saved
-                    </button>
-                  ) : (
-                    <button
-                      className="text-white text-center py-1 px-3 rounded-full save-new-coin"
-                      onClick={() => handleSaveCoin(coin.coinId)}
-                    >
-                      Save
-                    </button>
-                  )}
+                  {Auth.loggedIn() &&
+                    (savedCoinIds?.some(
+                      (savedCoinId) => savedCoinId === coin.coinId
+                    ) ? (
+                      <button
+                        disabled
+                        className="text-white text-center mx-3 py-1 px-3 rounded-full already-saved-coin"
+                      >
+                        Saved
+                      </button>
+                    ) : (
+                      <button
+                        className="text-white text-center py-1 px-3 rounded-full save-new-coin"
+                        onClick={() => handleSaveCoin(coin.coinId)}
+                      >
+                        Save
+                      </button>
+                    ))}
                 </div>
               </div>
             </div>
