@@ -75,6 +75,7 @@ const AppNavbar = () => {
                   <Nav.Link className="custom-nav" eventKey="signup">
                     Sign Up
                   </Nav.Link>
+
                 </Nav.Item>
               </Nav>
             </Modal.Title>
