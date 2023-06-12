@@ -6,7 +6,6 @@ import { saveCoinIds, getSavedCoinIds } from "../utils/localStorage";
 import { useMutation } from "@apollo/client";
 import { SAVE_COIN } from "../utils/mutations";
 
-
 const SearchCoins = () => {
   // create state for holding returned google api data
   const [searchedCoins, setSearchedCoins] = useState([]);
@@ -101,12 +100,16 @@ const SearchCoins = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {searchedCoins.map((coin) => (
             <div key={coin.coinId} className="flex justify-center">
-              <div className="border border-gray-300 rounded-lg p-4 flex flex-col justify-between">
+              <div className="border-2 border-gray-600 rounded-lg p-4 flex flex-col justify-between">
                 {coin.image && (
-                  <img src={coin.image} alt={coin.title} className="mb-4" />
+                  <img
+                    src={coin.image}
+                    alt={coin.title}
+                    className="mb-4 border-2 border-gray-600"
+                  />
                 )}
                 <h4>{coin.title}</h4>
                 <p className="text-sm">Token: {coin.symbol}</p>
