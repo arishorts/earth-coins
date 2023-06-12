@@ -21,7 +21,7 @@ const AppNavbar = () => {
 
             <div className="lg:items-center" id="navbar">
               <ul className="flex items-center justify-end flex-wrap">
-                <li className="ml-2">
+                <li className="ml-2 mr-6">
                   <Link to="/search" className="nav-link hover:text-sky-500">
                     All Coins
                   </Link>
@@ -29,7 +29,7 @@ const AppNavbar = () => {
                 {/* if user is logged in show saved coins and logout */}
                 {Auth.loggedIn() && (
                   <>
-                    <li className="mr-6 ml-6">
+                    <li className="mr-6">
                       <Link to="/saved" className="nav-link hover:text-sky-500">
                         Your Coins
                       </Link>
@@ -75,7 +75,6 @@ const AppNavbar = () => {
                   <Nav.Link className="custom-nav" eventKey="signup">
                     Sign Up
                   </Nav.Link>
-
                 </Nav.Item>
               </Nav>
             </Modal.Title>
