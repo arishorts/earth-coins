@@ -6,6 +6,7 @@ import { saveCoinIds, getSavedCoinIds } from "../utils/localStorage";
 import { useMutation } from "@apollo/client";
 import { SAVE_COIN } from "../utils/mutations";
 
+
 const SearchCoins = () => {
   // create state for holding returned google api data
   const [searchedCoins, setSearchedCoins] = useState([]);
@@ -14,11 +15,11 @@ const SearchCoins = () => {
   const [savedCoinIds, setSavedCoinIds] = useState(getSavedCoinIds());
   const [saveCoin] = useMutation(SAVE_COIN);
 
+  const [coinPrices, setCoinPrices] = useState({});
   // set up useEffect hook to save `savedCoinIds` list to localStorage on component unmount
   useEffect(() => {
     return () => saveCoinIds(savedCoinIds);
   }, [savedCoinIds]);
-
   // useEffect to show coins
   useEffect(() => {
     const fetchCoinData = async () => {
@@ -41,6 +42,13 @@ const SearchCoins = () => {
         }));
 
         setSearchedCoins(coinData);
+
+        // Set the initial coin prices
+        const initialCoinPrices = {};
+        coinData.forEach((coin) => {
+          initialCoinPrices[coin.coinId] = coin.current_price;
+        });
+        setCoinPrices(initialCoinPrices);
       } catch (err) {
         console.error(err);
       }
@@ -105,7 +113,7 @@ const SearchCoins = () => {
                 <p>{coin.coinId}</p>
                 <div className="flex items-center justify-between">
                   <p className="mb-0">
-                    Current Price: {coin.current_price.toFixed(5)}
+                    Current Price: {coinPrices[coin.coinId]?.toFixed(5)}
                   </p>
                   {/* Save button */}
 
