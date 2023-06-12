@@ -57,7 +57,7 @@ npm run start
 
 The website uses authentication and authorization to allow users to save and delete coins to their profile.
 <br>
-The website can be found at: https://ecocoinportal.herokuapp.com/
+The website can be found at: https://ecocryptoportal.herokuapp.com/
 
 <img src="./client/public/searchcoins.JPG" alt="Image" width="750" height="400">
 <br>
