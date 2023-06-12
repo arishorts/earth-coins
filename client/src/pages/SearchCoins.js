@@ -31,7 +31,6 @@ const SearchCoins = () => {
         }
 
         const items = await response.json();
-        console.log(items);
 
         const coinData = items.map((coin) => ({
           coinId: coin.id,
