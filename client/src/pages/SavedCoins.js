@@ -58,7 +58,7 @@ const SavedCoins = () => {
     return <h2>Loading...</h2>;
   }
 
- return (
+  return (
     <>
       <div className="py-10">
         <div className="container mx-auto text-center">
@@ -71,20 +71,25 @@ const SavedCoins = () => {
           </p>
         </div>
       </div>
-      <div className="container">
+      <div className="container mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {profile?.savedCoins &&
             profile.savedCoins.map((coin) => (
               <div key={coin.coinId} className="flex justify-center">
-                <div className="border border-gray-300 rounded-lg p-4 flex flex-col justify-between">
+                <div className="border-2 border-gray-600 rounded-lg p-4 flex flex-col justify-between">
                   {coin.image && (
-                    <img src={coin.image} alt={coin.title} className="mb-4" />
+                    <img
+                      src={coin.image}
+                      alt={coin.title}
+                      className="mb-4 border-2 border-gray-600"
+                    />
                   )}
                   <h4>{coin.title}</h4>
                   <p className="text-sm">Token: {coin.symbol}</p>
                   <p>{coin.coinId}</p>
                   <p className="mb-0">
-                    Current Price: {localStorage.getItem(`coinPrice-${coin.coinId}`)}
+                    Current Price:{" "}
+                    {localStorage.getItem(`coinPrice-${coin.coinId}`)}
                   </p>
                   <button
                     className="bg-red-900 hover:bg-red-700 transition duration-400 text-white text-center py-2 px-4 rounded-full w-full mt-4"

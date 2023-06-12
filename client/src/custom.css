@@ -29,8 +29,8 @@ footer {
 }
 
 .image-text-size {
-  width: 4em;
-  height: 4em;
+  width: 3em;
+  height: 3em;
   vertical-align: middle;
   margin-left: 6px;
 }
@@ -112,4 +112,3 @@ footer {
     transform: rotateY(360deg);
   }
 }
-

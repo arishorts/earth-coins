@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="footer">
       <Container className="d-flex justify-content-center align-items-center">
-        <p className="text-3xl py-2 px-4 bg-stone-700 rounded-full text-white border-stone-700 border-2">
+        <p className="text-xl sm:text-3xl md:text-2xl py-2 px-4 bg-stone-700 rounded-full text-white border-stone-700 border-2">
           Powered by{" "}
           <a
             href="https://www.coingecko.com/"

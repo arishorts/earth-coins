@@ -14,19 +14,24 @@ const AppNavbar = () => {
     <>
       <nav className="bg-sky-950 text-white">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-between py-3">
             <Link to="/" className="text-xl font-bold hover:text-sky-500">
               Home
             </Link>
 
             <div className="lg:items-center" id="navbar">
               <ul className="flex items-center justify-end flex-wrap">
+                <li className="ml-2">
+                  <Link to="/search" className="nav-link hover:text-sky-500">
+                    All Coins
+                  </Link>
+                </li>
                 {/* if user is logged in show saved coins and logout */}
                 {Auth.loggedIn() && (
                   <>
                     <li className="mr-6 ml-6">
                       <Link to="/saved" className="nav-link hover:text-sky-500">
-                        See Your Coins
+                        Your Coins
                       </Link>
                     </li>
                     <li onClick={Auth.logout} className="cursor-pointer">
