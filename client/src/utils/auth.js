@@ -11,6 +11,7 @@ class AuthService {
   // check if user's logged in
   loggedIn() {
     const token = this.getToken();
+    // console.log(!this.isTokenExpired(token) ? true : false);
     // If there is a token and it's not expired, return `true`
     return token && !this.isTokenExpired(token) ? true : false;
   }
