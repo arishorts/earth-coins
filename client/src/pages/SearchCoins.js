@@ -23,7 +23,13 @@ const SearchCoins = () => {
     const fetchCoinData = async () => {
       try {
         const response = await fetch(
-          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=eco-friendly&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`
+          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&locale=en`,
+          {
+            mode: "no-cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
         if (!response.ok) {
           throw new Error("something went wrong!");
@@ -87,15 +93,14 @@ const SearchCoins = () => {
         <div className="py-10">
           <div className="container mx-auto text-center">
             <p className="text-3xl inline-block p-2 rounded-full text-sky-900 border-sky-900 border-2">
-              Eco Crypto Portal
+              Crypto Portal
             </p>
           </div>
-          <p className="text-center text-xl">
-            The first website promoting support for Eco-friendly Cryptocurrency.
-          </p>
-          <p className="text-center text-xl">
-            Login and save coins to your profile.
-          </p>
+          {!Auth.loggedIn() && (
+            <p className="text-center text-xl">
+              Login and save coins to your profile!
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

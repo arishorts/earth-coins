@@ -87,10 +87,7 @@ const SavedCoins = () => {
                   <h4>{coin.title}</h4>
                   <p className="text-sm">Token: {coin.symbol}</p>
                   <p>{coin.coinId}</p>
-                  <p className="mb-0">
-                    Current Price:{" "}
-                    {localStorage.getItem(`coinPrice-${coin.coinId}`)}
-                  </p>
+                  <p className="mb-0">Current Price: {coin.current_price}</p>
                   <button
                     className="bg-red-900 hover:bg-red-700 transition duration-400 text-white text-center py-2 px-4 rounded-full w-full mt-4"
                     onClick={() => handleDeleteCoin(coin.coinId)}
