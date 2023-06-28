@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-
 const secret = "mysecretssshhhhhhh";
 const expiration = "2h";
 
@@ -7,26 +6,22 @@ const expiration = "2h";
 // const secret = process.env.SECRET;
 
 module.exports = {
-  authMiddleware: function (props) {
-    req = props.req;
+  authMiddleware: function (req) {
+    // req.dataSources = dataSources;
     let token = req.body.token || req.query.token || req.headers.authorization;
-
     if (req.headers.authorization) {
       token = token.split(" ").pop().trim();
     }
-
     if (!token) {
       return req;
     }
 
     try {
       const { data } = jwt.verify(token, secret, { maxAge: expiration });
-      console.log(data);
-      req.user = data;
+      req = data;
     } catch {
       console.log("Invalid token");
     }
-
     return req;
   },
   signToken: function ({ email, username, _id }) {

@@ -22,6 +22,12 @@ const coinSchema = new Schema({
   symbol: {
     type: String,
   },
+  ath: {
+    type: Number,
+  },
+  market_cap: {
+    type: Number,
+  },
 });
 
 const Coin = model("Coin", coinSchema);

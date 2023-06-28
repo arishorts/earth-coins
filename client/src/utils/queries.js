@@ -16,3 +16,16 @@ export const QUERY_ME = gql`
     }
   }
 `;
+
+export const QUERY_GETAPICOINS = gql`
+  query getAPICoins {
+    getAPICoins {
+      coinId
+      current_price
+      image
+      symbol
+      ath
+      market_cap
+    }
+  }
+`;
