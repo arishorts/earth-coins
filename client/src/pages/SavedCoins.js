@@ -7,7 +7,7 @@ import { QUERY_ME } from "../utils/queries";
 
 const SavedCoins = () => {
   // create state to hold saved coinId values
-  const { loading, data: userData, refetch } = useQuery(QUERY_ME);
+  const { loading, error, data: userData, refetch } = useQuery(QUERY_ME);
 
   // Check if data is returning from the `QUERY_ME` query
   const profile = userData?.me || {};
@@ -47,6 +47,7 @@ const SavedCoins = () => {
       });
       // upon success, remove coin's id from localStorage
       removeCoinId(coinId);
+      //refetch was a quick fix to remove bug where the user adds a coin and it doesnt populate in me if the user goes straight from Home page to their profile
       refetch();
     } catch (err) {
       console.error(err);
@@ -54,9 +55,9 @@ const SavedCoins = () => {
   };
 
   // if data isn't here yet, say so
-  if (loading) {
-    return <h2>Loading...</h2>;
-  }
+  refetch();
+  if (loading) return "Loading...";
+  if (error) return `Error! ${error.message}`;
 
   return (
     <>

@@ -1,12 +1,16 @@
 const { gql } = require("apollo-server-express");
+const { ApolloServer } = require("@apollo/server");
+const { startStandaloneServer } = require("@apollo/server/standalone");
 
-const typeDefs = gql`
+const typeDefs = `#graphql
   type Coin {
     _id: ID!
     coinId: ID!
-    current_price: Int
+    current_price: Float
     image: String
     symbol: String
+    ath: Float
+    market_cap: Float
     savedBy: [User]
   }
 
@@ -30,13 +34,16 @@ const typeDefs = gql`
 
   input CoinContent {
     coinId: ID!
-    current_price: Int
+    current_price: Float
     image: String
     symbol: String
+    ath: Float
+    market_cap: Float
   }
 
   type Query {
     me: User
+    getAPICoins:[Coin]
     getAllCoins: [Coin]
     getSavedCoins: [Coin]
   }

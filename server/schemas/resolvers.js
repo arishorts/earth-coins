@@ -13,6 +13,9 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in!");
     },
+    getAPICoins: (parent, args, context) => {
+      return context.dataSources.coinGeckoAPI.getAPICoins();
+    },
     getAllCoins: async () => {
       const coins = await Coin.find({});
       return coins.map((coin) => ({
@@ -63,7 +66,6 @@ const resolvers = {
     saveCoin: async (parent, { content }, context) => {
       if (context.user) {
         const { coinId } = content;
-
         // Check if the coin exists and update it or create a new one if it doesn't
         let coin = await Coin.findOneAndUpdate(
           { coinId },
@@ -77,7 +79,6 @@ const resolvers = {
           { $push: { savedCoins: content } },
           { new: true }
         ).populate("savedCoins");
-
         // // Populate users associated with the coin
         coin = await Coin.findOne({ _id: coin._id }).populate("users");
 
