@@ -14,7 +14,7 @@ import {
 
 const SearchCoins = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedOption, setSelectedOption] = useState("8");
+  const [selectedOption, setSelectedOption] = useState(16);
   const [totalCoins, setTotalCoins] = useState(0);
   const {
     loading,
@@ -22,8 +22,8 @@ const SearchCoins = () => {
     data: coinData,
     refetch, // Refetch function from useQuery
   } = useQuery(QUERY_GETAPICOINS, {
-    variables: { page: currentPage },
-    skip: !selectedOption, // Skip initial query until selectedOption is set
+    variables: { page: currentPage, number: selectedOption },
+    // skip: !selectedOption, // Skip initial query until selectedOption is set
   });
   const allCoins = coinData?.getAPICoins || [];
 
@@ -160,7 +160,7 @@ const SearchCoins = () => {
                             : "text-gray-700",
                           "block px-4 py-2 text-sm"
                         )}
-                        onClick={() => handleOptionSelect("8")}
+                        onClick={() => handleOptionSelect(8)}
                       >
                         8
                       </li>
@@ -175,7 +175,7 @@ const SearchCoins = () => {
                             : "text-gray-700",
                           "block px-4 py-2 text-sm"
                         )}
-                        onClick={() => handleOptionSelect("16")}
+                        onClick={() => handleOptionSelect(16)}
                       >
                         16
                       </li>
@@ -190,7 +190,7 @@ const SearchCoins = () => {
                             : "text-gray-700",
                           "block px-4 py-2 text-sm"
                         )}
-                        onClick={() => handleOptionSelect("32")}
+                        onClick={() => handleOptionSelect(32)}
                       >
                         32
                       </li>
@@ -206,7 +206,7 @@ const SearchCoins = () => {
                               : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
-                          onClick={() => handleOptionSelect("50")}
+                          onClick={() => handleOptionSelect(50)}
                         >
                           50
                         </li>

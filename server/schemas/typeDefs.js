@@ -43,8 +43,7 @@ const typeDefs = `#graphql
 
   type Query {
     me: User
-    getAPICoins:[Coin]
-    getAllCoins: [Coin]
+    getAPICoins(page: Int, number: Int):[Coin]
     getSavedCoins: [Coin]
   }
 

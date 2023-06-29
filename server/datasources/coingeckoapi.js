@@ -16,10 +16,10 @@ class CoinGeckoAPI extends RESTDataSource {
     return response.length;
   }
 
-  async getAPICoins(page) {
+  async getAPICoins(page, number) {
     try {
       const response = await this.get(
-        `coins/markets?vs_currency=usd&order=market_cap_desc&per_page=8&page=${page}&sparkline=false&locale=en`
+        `coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${number}&page=${page}&sparkline=false&locale=en`
       );
 
       return Array.isArray(response)
