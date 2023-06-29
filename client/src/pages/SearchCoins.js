@@ -1,30 +1,55 @@
 import React, { useState, useEffect } from "react";
-import Pagination from "react-bootstrap/Pagination";
 import Auth from "../utils/auth";
 import { saveCoinIds, getSavedCoinIds } from "../utils/localStorage";
 import { useMutation, useQuery } from "@apollo/client";
 import { SAVE_COIN } from "../utils/mutations";
 import { QUERY_GETAPICOINS } from "../utils/queries";
+import { Fragment } from "react";
+import { Menu, Transition } from "@headlessui/react";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronDownIcon,
+} from "@heroicons/react/20/solid";
 
 const SearchCoins = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedOption, setSelectedOption] = useState(16);
+  const [totalCoins, setTotalCoins] = useState(0);
   const {
     loading,
     error,
     data: coinData,
-    refetch,
-  } = useQuery(QUERY_GETAPICOINS);
+    refetch, // Refetch function from useQuery
+  } = useQuery(QUERY_GETAPICOINS, {
+    variables: { page: currentPage, number: selectedOption },
+    // skip: !selectedOption, // Skip initial query until selectedOption is set
+  });
   const allCoins = coinData?.getAPICoins || [];
 
   // create state for holding returned google api data
   const [searchedCoins, setSearchedCoins] = useState([]);
-  const [paginate, usePaginate] = useState([8]);
-  const [currentPage, setCurrentPage] = useState([1]);
 
   // create state to hold saved coinId values
   const [savedCoinIds, setSavedCoinIds] = useState(getSavedCoinIds());
   const [saveCoin] = useMutation(SAVE_COIN);
 
-  const [coinPrices, setCoinPrices] = useState({});
+  useEffect(() => {
+    const fetchTotalCoins = async () => {
+      try {
+        const response = await fetch(
+          "https://api.coingecko.com/api/v3/coins/list"
+        );
+        const coins = await response.json();
+        setTotalCoins(coins.length);
+      } catch (error) {
+        console.error("Error occurred while fetching total coins:", error);
+      }
+    };
+
+    fetchTotalCoins();
+  }, []);
+
   // set up useEffect hook to save `savedCoinIds` list to localStorage on component unmount
   useEffect(() => {
     return () => saveCoinIds(savedCoinIds);
@@ -62,6 +87,27 @@ const SearchCoins = () => {
     }
   };
 
+  function classNames(...classes) {
+    return classes.filter(Boolean).join(" ");
+  }
+
+  const handleOptionSelect = (option) => {
+    setSelectedOption(option);
+    //NEED TO UNCOMMENT THIS OUT WHEN READY
+    //refetch();
+  };
+
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage);
+    //NEED TO UNCOMMENT THIS OUT WHEN READY
+    //refetch();
+  };
+
+  // Calculate the start and end indices based on the current page and selected option
+  const startIndex = (currentPage - 1) * parseInt(selectedOption);
+  const endIndex = startIndex + parseInt(selectedOption);
+  const visibleCoins = searchedCoins.slice(startIndex, endIndex);
+
   // if data isn't here yet, say so
   if (loading) return "Loading...";
   if (error) return `Error! ${error.message}`;
@@ -80,6 +126,97 @@ const SearchCoins = () => {
               Login and save coins to your profile!
             </p>
           )}
+        </div>
+
+        <div className="pb-3 text-right">
+          <Menu as="div" className="relative inline-block text-left">
+            <div>
+              <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                {selectedOption}
+                <ChevronDownIcon
+                  className="-mr-1 h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+              </Menu.Button>
+            </div>
+
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="py-1">
+                  <Menu.Item>
+                    {({ active }) => (
+                      <li
+                        className={classNames(
+                          active
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700",
+                          "block px-4 py-2 text-sm"
+                        )}
+                        onClick={() => handleOptionSelect(8)}
+                      >
+                        8
+                      </li>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <li
+                        className={classNames(
+                          active
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700",
+                          "block px-4 py-2 text-sm"
+                        )}
+                        onClick={() => handleOptionSelect(16)}
+                      >
+                        16
+                      </li>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <li
+                        className={classNames(
+                          active
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700",
+                          "block px-4 py-2 text-sm"
+                        )}
+                        onClick={() => handleOptionSelect(32)}
+                      >
+                        32
+                      </li>
+                    )}
+                  </Menu.Item>
+                  <form method="POST" action="#">
+                    <Menu.Item>
+                      {({ active }) => (
+                        <li
+                          className={classNames(
+                            active
+                              ? "bg-gray-100 text-gray-900"
+                              : "text-gray-700",
+                            "block px-4 py-2 text-sm"
+                          )}
+                          onClick={() => handleOptionSelect(50)}
+                        >
+                          50
+                        </li>
+                      )}
+                    </Menu.Item>
+                  </form>
+                </div>
+              </Menu.Items>
+            </Transition>
+          </Menu>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -124,106 +261,53 @@ const SearchCoins = () => {
             </div>
           ))}
         </div>
+
         <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
           <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
             <div>
               <p className="text-sm text-gray-700">
-                Showing
+                Showing{" "}
                 <span className="font-medium">
-                  {" "}
-                  {searchedCoins.length ? 1 : 0}{" "}
-                </span>
-                to
-                <span className="font-medium"> 10 </span>
-                of
+                  {searchedCoins.length
+                    ? parseInt(selectedOption) * (currentPage - 1) + 1
+                    : 1}
+                </span>{" "}
+                to{" "}
                 <span className="font-medium">
-                  {" "}
-                  {searchedCoins.length || 0}{" "}
-                </span>
+                  {searchedCoins.length
+                    ? parseInt(selectedOption) * currentPage
+                    : 1}
+                </span>{" "}
+                of <span className="font-medium">{totalCoins || 0} </span>{" "}
                 results
               </p>
             </div>
+
             <div>
               <nav
                 className="isolate inline-flex -space-x-px rounded-md shadow-sm"
                 aria-label="Pagination"
               >
-                <a
-                  href="top"
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
                   className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                 >
                   <span className="sr-only">Previous</span>
-                  <svg
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </a>
-                {/* <!-- Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" --> */}
-                <a
-                  href="top"
-                  aria-current="page"
-                  className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  1
-                </a>
-                <a
-                  href="top"
-                  className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                >
-                  2
-                </a>
-                <a
-                  href="top"
-                  className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
-                >
-                  3
-                </a>
-                <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">
-                  ...
-                </span>
-                <a
-                  href="top"
-                  className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
-                >
-                  8
-                </a>
-                <a
-                  href="top"
-                  className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                >
-                  9
-                </a>
-                <a
-                  href="top"
-                  className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                >
+                  <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+                </button>
+                <div className="flex items-center mx-2">
+                  Page <span className="mx-1 font-bold">{currentPage}</span> of
                   10
-                </a>
-                <a
-                  href="top"
+                </div>
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === 10}
                   className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                 >
-                  <svg
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </a>
+                  <span className="sr-only">Next</span>
+                  <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+                </button>
               </nav>
             </div>
           </div>

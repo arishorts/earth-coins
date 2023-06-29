@@ -13,15 +13,17 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in!");
     },
-    getAPICoins: (parent, args, context) => {
-      return context.dataSources.coinGeckoAPI.getAPICoins();
-    },
-    getAllCoins: async () => {
-      const coins = await Coin.find({});
-      return coins.map((coin) => ({
-        ...coin.toObject(),
-        _id: coin._id.toString(),
-      }));
+    getAPICoins: async (parent, { page, number }, { dataSources }) => {
+      try {
+        const response = await dataSources.coinGeckoAPI.getAPICoins(
+          page,
+          number
+        );
+        return response;
+      } catch (error) {
+        console.error("Error occurred while fetching API coins:", error);
+        return [];
+      }
     },
     getSavedCoins: async (parent, args, context) => {
       if (context.user) {
