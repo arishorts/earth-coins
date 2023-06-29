@@ -6,10 +6,20 @@ class CoinGeckoAPI extends RESTDataSource {
     this.baseURL = "https://api.coingecko.com/api/v3/";
   }
 
-  async getAPICoins() {
+  async getCoinList({ coinId }) {
+    const response = await this.get(`coins/list`);
+    return this.coinReducer(response[0]);
+  }
+
+  async getTotalCoins({ coinId }) {
+    const response = await this.get(`coins/${coinId}`);
+    return response.length;
+  }
+
+  async getAPICoins(page) {
     try {
       const response = await this.get(
-        `coins/markets?vs_currency=usd&order=market_cap_desc&per_page=8&page=1&sparkline=false&locale=en`
+        `coins/markets?vs_currency=usd&order=market_cap_desc&per_page=8&page=${page}&sparkline=false&locale=en`
       );
 
       return Array.isArray(response)
