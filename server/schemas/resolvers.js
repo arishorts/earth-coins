@@ -13,11 +13,11 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in!");
     },
-    getAPICoins: async (parent, { page, number }, { dataSources }) => {
+    getAPICoins: async (parent, { offset, limit }, { dataSources }) => {
       try {
         const response = await dataSources.coinGeckoAPI.getAPICoins(
-          page,
-          number
+          offset,
+          limit
         );
         return response;
       } catch (error) {
@@ -25,6 +25,7 @@ const resolvers = {
         return [];
       }
     },
+    
     getSavedCoins: async (parent, args, context) => {
       if (context.user) {
         const user = await User.findById(context.user._id).populate(

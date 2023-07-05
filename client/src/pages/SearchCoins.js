@@ -10,22 +10,24 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronDownIcon,
+  CheckIcon,
+  PlusIcon
 } from "@heroicons/react/20/solid";
 
 const SearchCoins = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedOption, setSelectedOption] = useState(16);
+  const [offset, setOffset] = useState(1);
+  const [limit, setLimit] = useState(16);
   const [totalCoins, setTotalCoins] = useState(0);
   const {
     loading,
     error,
-    data: coinData,
-    refetch, // Refetch function from useQuery
+    data,
+    fetchMore 
   } = useQuery(QUERY_GETAPICOINS, {
-    variables: { page: currentPage, number: selectedOption },
-    // skip: !selectedOption, // Skip initial query until selectedOption is set
+    variables: { offset, limit },
+    // skip: !limit, // Skip initial query until limit is set
   });
-  const allCoins = coinData?.getAPICoins || [];
+  const coinList = data?.getAPICoins || [];
 
   // create state for holding returned google api data
   const [searchedCoins, setSearchedCoins] = useState([]);
@@ -56,10 +58,10 @@ const SearchCoins = () => {
   }, [savedCoinIds]);
 
   useEffect(() => {
-    if (!loading && coinData) {
-      setSearchedCoins(coinData.getAPICoins);
+    if (!loading && data) {
+      setSearchedCoins(coinList);
     }
-  }, [loading, coinData]);
+  }, [loading, data]);
 
   // create function to handle saving a coin to our database
   const handleSaveCoin = async (coinId) => {
@@ -91,21 +93,27 @@ const SearchCoins = () => {
     return classes.filter(Boolean).join(" ");
   }
 
-  const handleOptionSelect = (option) => {
-    setSelectedOption(option);
+  const handleLimitSelect = (limit) => {
+    setLimit(limit);
     //NEED TO UNCOMMENT THIS OUT WHEN READY
     //refetch();
   };
 
-  const handlePageChange = (selectedPage) => {
-    setCurrentPage(selectedPage);
+  const handlePageChange = (newOffset) => {
+    fetchMore({
+      variables: {
+        offset: newOffset,
+      },
+    });
+    //added above code starting at etchmore which causes the app to hit 429 limit rather quickly
+    setOffset(newOffset);
     //NEED TO UNCOMMENT THIS OUT WHEN READY
     //refetch();
   };
 
   // Calculate the start and end indices based on the current page and selected option
-  const startIndex = (currentPage - 1) * parseInt(selectedOption);
-  const endIndex = startIndex + parseInt(selectedOption);
+  const startIndex = (offset - 1) * parseInt(limit);
+  const endIndex = startIndex + parseInt(limit);
   const visibleCoins = searchedCoins.slice(startIndex, endIndex);
 
   // if data isn't here yet, say so
@@ -132,7 +140,7 @@ const SearchCoins = () => {
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                {selectedOption}
+                {limit}
                 <ChevronDownIcon
                   className="-mr-1 h-5 w-5 text-gray-400"
                   aria-hidden="true"
@@ -160,7 +168,7 @@ const SearchCoins = () => {
                             : "text-gray-700",
                           "block px-4 py-2 text-sm"
                         )}
-                        onClick={() => handleOptionSelect(8)}
+                        onClick={() => handleLimitSelect(8)}
                       >
                         8
                       </li>
@@ -175,7 +183,7 @@ const SearchCoins = () => {
                             : "text-gray-700",
                           "block px-4 py-2 text-sm"
                         )}
-                        onClick={() => handleOptionSelect(16)}
+                        onClick={() => handleLimitSelect(16)}
                       >
                         16
                       </li>
@@ -190,7 +198,7 @@ const SearchCoins = () => {
                             : "text-gray-700",
                           "block px-4 py-2 text-sm"
                         )}
-                        onClick={() => handleOptionSelect(32)}
+                        onClick={() => handleLimitSelect(32)}
                       >
                         32
                       </li>
@@ -206,7 +214,7 @@ const SearchCoins = () => {
                               : "text-gray-700",
                             "block px-4 py-2 text-sm"
                           )}
-                          onClick={() => handleOptionSelect(50)}
+                          onClick={() => handleLimitSelect(50)}
                         >
                           50
                         </li>
@@ -219,24 +227,24 @@ const SearchCoins = () => {
           </Menu>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {allCoins.map((coin) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+          {coinList.map((coin) => (
             <div key={coin.coinId} className="flex justify-center">
-              <div className="border-2 border-gray-600 rounded-lg p-4 flex flex-col justify-between">
+              <div className="border-2 border-gray-600 rounded-lg px-3 pt-3 flex flex-col justify-between">
                 {coin.image && (
                   <img
                     src={coin.image}
                     alt={coin.title}
-                    className="mb-4 border-2 border-gray-600"
+                    className="mb-3"
                   />
                 )}
                 <h4>{coin.title}</h4>
-                <p className="text-sm">Token: {coin.symbol}</p>
+                <p>Token: {coin.symbol}</p>
                 <p>{coin.coinId}</p>
-                <div className="flex items-center justify-between">
-                  <p className="mb-0">
+                <p>
                     Current Price: {coin.current_price?.toFixed(5)}
                   </p>
+                <div className="flex justify-end mt-2 mb-3">
                   {/* Save button */}
                   {Auth.loggedIn() &&
                     (savedCoinIds?.some(
@@ -244,16 +252,18 @@ const SearchCoins = () => {
                     ) ? (
                       <button
                         disabled
-                        className="text-white text-center mx-3 py-1 px-3 rounded-full already-saved-coin"
+                        className="text-white text-center py-1 px-3 rounded-full already-saved-coin"
                       >
-                        Saved
+                        <CheckIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
+
                       </button>
                     ) : (
                       <button
                         className="text-white text-center py-1 px-3 rounded-full save-new-coin"
                         onClick={() => handleSaveCoin(coin.coinId)}
                       >
-                        Save
+                        <PlusIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
+
                       </button>
                     ))}
                 </div>
@@ -269,13 +279,13 @@ const SearchCoins = () => {
                 Showing{" "}
                 <span className="font-medium">
                   {searchedCoins.length
-                    ? parseInt(selectedOption) * (currentPage - 1) + 1
+                    ? parseInt(limit) * (offset - 1) + 1
                     : 1}
                 </span>{" "}
                 to{" "}
                 <span className="font-medium">
                   {searchedCoins.length
-                    ? parseInt(selectedOption) * currentPage
+                    ? parseInt(limit) * offset
                     : 1}
                 </span>{" "}
                 of <span className="font-medium">{totalCoins || 0} </span>{" "}
@@ -289,20 +299,20 @@ const SearchCoins = () => {
                 aria-label="Pagination"
               >
                 <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
+                  onClick={() => handlePageChange(offset - 1)}
+                  disabled={offset === 1}
                   className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                 >
                   <span className="sr-only">Previous</span>
                   <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
                 </button>
                 <div className="flex items-center mx-2">
-                  Page <span className="mx-1 font-bold">{currentPage}</span> of
-                  10
+                  Page <span className="mx-1 font-bold">{offset}</span> of{" "}
+                  {Math.ceil(totalCoins / limit)}
                 </div>
                 <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === 10}
+                  onClick={() => handlePageChange(offset + 1)}
+                  disabled={offset === 10}
                   className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                 >
                   <span className="sr-only">Next</span>
