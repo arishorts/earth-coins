@@ -18,8 +18,8 @@ export const QUERY_ME = gql`
 `;
 
 export const QUERY_GETAPICOINS = gql`
-  query getAPICoins($page: Int, $number: Int) {
-    getAPICoins(page: $page, number: $number) {
+  query getAPICoins($offset: Int, $limit: Int) {
+    getAPICoins(offset: $offset, limit: $limit) {
       coinId
       current_price
       image

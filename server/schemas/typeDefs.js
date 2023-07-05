@@ -41,9 +41,25 @@ const typeDefs = `#graphql
     market_cap: Float
   }
 
+"""Simple wrapper around our list of coins   that contains a cursor to the
+last item in the list. Pass this cursor to the launches query to fetch results
+after these."""
+  type CoinConnection { # add this below the Query type as an additional type.
+  cursor: String!
+  hasMore: Boolean!
+  getCoins: [Coin]!
+}
+
   type Query {
     me: User
-    getAPICoins(page: Int, number: Int):[Coin]
+    getCoins( # replace the current launches query with this one.
+    """The number of results to show. Must be >= 1. Default = 20"""
+    pageSize: Int
+    """If you add a cursor here, it will only return results _after_ this cursor"""
+    after: String
+  ): CoinConnection!
+
+    getAPICoins(offset: Int, limit: Int):[Coin]
     getSavedCoins: [Coin]
   }
 

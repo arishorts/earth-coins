@@ -16,10 +16,10 @@ class CoinGeckoAPI extends RESTDataSource {
     return response.length;
   }
 
-  async getAPICoins(page, number) {
+  async getAPICoins(offset, limit) {
     try {
       const response = await this.get(
-        `coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${number}&page=${page}&sparkline=false&locale=en`
+        `coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=${offset}&sparkline=false&locale=en`
       );
 
       return Array.isArray(response)
@@ -33,7 +33,7 @@ class CoinGeckoAPI extends RESTDataSource {
   }
 
   coinReducer(coin) {
-    const { __typename, ...coinData } = coin;
+    // const { __typename, ...data } = coin;
     return {
       coinId: coin.id,
       current_price: coin.current_price,
