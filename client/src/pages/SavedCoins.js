@@ -73,30 +73,43 @@ const SavedCoins = () => {
         </div>
       </div>
       <div className="container mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
           {profile?.savedCoins &&
             profile.savedCoins.map((coin) => (
-              <div key={coin.coinId} className="flex justify-center">
-                <div className="border-2 border-gray-600 rounded-lg p-4 flex flex-col justify-between">
-                  {coin.image && (
-                    <img
-                      src={coin.image}
-                      alt={coin.title}
-                      className="mb-4 border-2 border-gray-600"
-                    />
-                  )}
-                  <h4>{coin.title}</h4>
-                  <p className="text-sm">Token: {coin.symbol}</p>
-                  <p>{coin.coinId}</p>
-                  <p className="mb-0">Current Price: {coin.current_price}</p>
+              <li
+                key={coin.id}
+                className="border-2 border-gray-600 col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200"
+              >
+                <div className="flex-1 flex flex-col p-8">
+                  <img
+                    className="w-30 h-30 flex-shrink-0 mx-auto bg-black rounded-full"
+                    src={coin.image}
+                    alt=""
+                  />
+                  <h3 className="mt-6 text-gray-900 font-medium">
+                    {coin.name}
+                  </h3>
+                  <dl className="mt-1 flex-grow flex flex-col justify-between">
+                    <dt className="sr-only">Price</dt>
+                    <dd className="text-gray-500">{coin.current_price}</dd>
+                    <dt className="sr-only">Symbol</dt>
+                    <dd className="mt-3">
+                      <span className="px-2 py-1 text-green-800 font-medium bg-green-100 rounded-full">
+                        {coin.symbol}
+                      </span>
+                    </dd>
+                  </dl>
+                </div>
+                <div className="flex justify-end mt-2 mb-3">
+                  {/* Delete button */}
                   <button
-                    className="bg-red-900 hover:bg-red-700 transition duration-400 text-white text-center py-2 px-4 rounded-full w-full mt-4"
+                    className="bg-red-900 hover:bg-red-700 transition duration-400 text-white text-center py-2 px-4 w-full"
                     onClick={() => handleDeleteCoin(coin.coinId)}
                   >
                     Delete
                   </button>
                 </div>
-              </div>
+              </li>
             ))}
         </div>
       </div>

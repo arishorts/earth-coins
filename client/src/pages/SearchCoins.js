@@ -11,19 +11,14 @@ import {
   ChevronRightIcon,
   ChevronDownIcon,
   CheckIcon,
-  PlusIcon
+  PlusIcon,
 } from "@heroicons/react/20/solid";
 
 const SearchCoins = () => {
   const [offset, setOffset] = useState(1);
   const [limit, setLimit] = useState(16);
   const [totalCoins, setTotalCoins] = useState(0);
-  const {
-    loading,
-    error,
-    data,
-    fetchMore 
-  } = useQuery(QUERY_GETAPICOINS, {
+  const { loading, error, data, fetchMore } = useQuery(QUERY_GETAPICOINS, {
     variables: { offset, limit },
     // skip: !limit, // Skip initial query until limit is set
   });
@@ -58,10 +53,10 @@ const SearchCoins = () => {
   }, [savedCoinIds]);
 
   useEffect(() => {
-    if (!loading && data) {
+    if (!loading && coinList) {
       setSearchedCoins(coinList);
     }
-  }, [loading, data]);
+  }, [loading, coinList]);
 
   // create function to handle saving a coin to our database
   const handleSaveCoin = async (coinId) => {
@@ -229,46 +224,60 @@ const SearchCoins = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
           {coinList.map((coin) => (
-            <div key={coin.coinId} className="flex justify-center">
-              <div className="border-2 border-gray-600 rounded-lg px-3 pt-3 flex flex-col justify-between">
-                {coin.image && (
-                  <img
-                    src={coin.image}
-                    alt={coin.title}
-                    className="mb-3"
-                  />
-                )}
-                <h4>{coin.title}</h4>
-                <p>Token: {coin.symbol}</p>
-                <p>{coin.coinId}</p>
-                <p>
-                    Current Price: {coin.current_price?.toFixed(5)}
-                  </p>
-                <div className="flex justify-end mt-2 mb-3">
-                  {/* Save button */}
-                  {Auth.loggedIn() &&
-                    (savedCoinIds?.some(
-                      (savedCoinId) => savedCoinId === coin.coinId
-                    ) ? (
-                      <button
-                        disabled
-                        className="text-white text-center py-1 px-3 rounded-full already-saved-coin"
-                      >
-                        <CheckIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
-
-                      </button>
-                    ) : (
-                      <button
-                        className="text-white text-center py-1 px-3 rounded-full save-new-coin"
-                        onClick={() => handleSaveCoin(coin.coinId)}
-                      >
-                        <PlusIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
-
-                      </button>
-                    ))}
-                </div>
+            <li
+              key={coin.coinId}
+              className="border-2 border-gray-600 col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200"
+            >
+              <div className="flex-1 flex flex-col p-8">
+                <img
+                  className="w-30 h-30 flex-shrink-0 mx-auto bg-black rounded-full"
+                  src={coin.image}
+                  alt=""
+                />
+                <h3 className="mt-6 text-gray-900 font-medium">{coin.name}</h3>
+                <dl className="mt-1 flex-grow flex flex-col justify-between">
+                  <dt className="sr-only">Price</dt>
+                  <dd className="text-gray-500">{coin.current_price}</dd>
+                  <dt className="sr-only">Symbol</dt>
+                  <dd className="mt-3">
+                    <span className="px-2 py-1 text-green-800 font-medium bg-green-100 rounded-full">
+                      {coin.symbol}
+                    </span>
+                  </dd>
+                </dl>
               </div>
-            </div>
+              <div className="flex justify-end mt-2 mb-3">
+                {/* Save button */}
+                <button
+                  onClick={() => handleSaveCoin(coin.coinId)}
+                  disabled={savedCoinIds.includes(coin.coinId)}
+                  className={classNames(
+                    savedCoinIds.includes(coin.coinId)
+                      ? "opacity-50 cursor-not-allowed"
+                      : "save-new-coin",
+                    "relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-2 text-sm font-medium"
+                  )}
+                >
+                  {Auth.loggedIn() && savedCoinIds.includes(coin.coinId) ? (
+                    <>
+                      <CheckIcon
+                        className="w-5 h-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                      <span className="ml-3">Saved</span>
+                    </>
+                  ) : (
+                    <>
+                      <PlusIcon
+                        className="w-5 h-5 text-white-400"
+                        aria-hidden="true"
+                      />
+                      <span className="ml-3">Save</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </li>
           ))}
         </div>
 
@@ -284,9 +293,7 @@ const SearchCoins = () => {
                 </span>{" "}
                 to{" "}
                 <span className="font-medium">
-                  {searchedCoins.length
-                    ? parseInt(limit) * offset
-                    : 1}
+                  {searchedCoins.length ? parseInt(limit) * offset : 1}
                 </span>{" "}
                 of <span className="font-medium">{totalCoins || 0} </span>{" "}
                 results

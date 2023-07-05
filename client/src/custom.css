@@ -37,12 +37,11 @@ footer {
 
 .save-new-coin {
   background: #417b5a;
-  border-color: #417b5a;
+  color: white !important;
 }
 
 .save-new-coin:hover {
-  background: #5fbf88;
-  border-color: #5fbf88;
+  background: #2b8954;
 }
 
 .already-saved-coin {
