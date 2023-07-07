@@ -4,7 +4,6 @@ const { startStandaloneServer } = require("@apollo/server/standalone");
 
 const typeDefs = `#graphql
   type Coin {
-    _id: ID!
     coinId: ID!
     current_price: Float
     image: String
@@ -34,33 +33,37 @@ const typeDefs = `#graphql
 
   input CoinContent {
     coinId: ID!
-    current_price: Float
-    image: String
-    symbol: String
     ath: Float
+    image: String
+    current_price: Float
+    symbol: String
     market_cap: Float
   }
 
-"""Simple wrapper around our list of coins   that contains a cursor to the
-last item in the list. Pass this cursor to the launches query to fetch results
-after these."""
-  type CoinConnection { # add this below the Query type as an additional type.
+# Contains a cursor to the last item in the list. Pass this cursor to the launches query to fetch results after these.
+# Define the connection type for paginated coins
+type CoinConnection {
+  edges: [CoinEdge!]!
+  pageInfo: PageInfo!
+}
+
+# Define the edge type for a coin in the connection
+type CoinEdge {
   cursor: String!
-  hasMore: Boolean!
-  getCoins: [Coin]!
+  node: Coin
+}
+
+  type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
 }
 
   type Query {
     me: User
-    getCoins( # replace the current launches query with this one.
-    """The number of results to show. Must be >= 1. Default = 20"""
-    pageSize: Int
-    """If you add a cursor here, it will only return results _after_ this cursor"""
-    after: String
-  ): CoinConnection!
-
+    getCoinList(first: Int, after: String, last: Int, before: String): CoinConnection!
     getAPICoins(offset: Int, limit: Int):[Coin]
-    getSavedCoins: [Coin]
   }
 
   type Mutation {
