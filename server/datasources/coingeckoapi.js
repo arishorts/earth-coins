@@ -31,18 +31,33 @@ class CoinGeckoAPI extends RESTDataSource {
     }
   }
 
-  async getAPICoins(offset, limit) {
+  // async getAPICoins(offset, limit) {
+  //   try {
+  //     const response = await this.get(
+  //       `coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=${offset}&sparkline=false&locale=en`
+  //     );
+
+  //     return Array.isArray(response)
+  //       ? response.map((coin) => this.coinReducer(coin))
+  //       : [];
+  //   } catch (error) {
+  //     // Handle the error appropriately
+  //     console.error("Error occurred while fetching API coins:", error);
+  //     return []; // Return an empty array or a default value as desired
+  //   }
+  // }
+
+  async getTotalCoins() {
     try {
       const response = await this.get(
-        `coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&page=${offset}&sparkline=false&locale=en`
+        `https://api.coingecko.com/api/v3/coins/list`
       );
-
-      return Array.isArray(response)
-        ? response.map((coin) => this.coinReducer(coin))
-        : [];
+      return response.map((coin) => ({
+        coinId: coin.id,
+      }));
     } catch (error) {
       // Handle the error appropriately
-      console.error("Error occurred while fetching API coins:", error);
+      console.error("Error occurred while fetching total coins:", error);
       return []; // Return an empty array or a default value as desired
     }
   }

@@ -13,12 +13,23 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in!");
     },
-    getAPICoins: async (parent, { offset, limit }, { dataSources }) => {
+
+    // getAPICoins: async (parent, { offset, limit }, { dataSources }) => {
+    //   try {
+    //     const response = await dataSources.coinGeckoAPI.getAPICoins(
+    //       offset,
+    //       limit
+    //     );
+    //     return response;
+    //   } catch (error) {
+    //     console.error("Error occurred while fetching API coins:", error);
+    //     return [];
+    //   }
+    // },
+
+    getTotalCoins: async (parent, args, { dataSources }) => {
       try {
-        const response = await dataSources.coinGeckoAPI.getAPICoins(
-          offset,
-          limit
-        );
+        const response = await dataSources.coinGeckoAPI.getTotalCoins();
         return response;
       } catch (error) {
         console.error("Error occurred while fetching API coins:", error);

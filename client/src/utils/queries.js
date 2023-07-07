@@ -17,19 +17,19 @@ export const QUERY_ME = gql`
   }
 `;
 
-export const QUERY_GETAPICOINS = gql`
-  query getAPICoins($offset: Int, $limit: Int) {
-    getAPICoins(offset: $offset, limit: $limit) {
-      coinId
-      name
-      ath
-      image
-      current_price
-      symbol
-      market_cap
-    }
-  }
-`;
+// export const QUERY_GETAPICOINS = gql`
+//   query getAPICoins($offset: Int, $limit: Int) {
+//     getAPICoins(offset: $offset, limit: $limit) {
+//       coinId
+//       name
+//       ath
+//       image
+//       current_price
+//       symbol
+//       market_cap
+//     }
+//   }
+// `;
 
 export const QUERY_GETCOINLIST = gql`
   query getCoinList($after: String, $first: Int, $last: Int, $before: String) {
@@ -51,6 +51,14 @@ export const QUERY_GETCOINLIST = gql`
         hasPreviousPage
         startCursor
       }
+    }
+  }
+`;
+
+export const QUERY_GETTOTALCOINS = gql`
+  query getTotalCoins {
+    getTotalCoins {
+      coinId
     }
   }
 `;

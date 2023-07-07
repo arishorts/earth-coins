@@ -77,7 +77,7 @@ const SavedCoins = () => {
           {profile?.savedCoins &&
             profile.savedCoins.map((coin) => (
               <li
-                key={coin.id}
+                key={coin.coinId}
                 className="border-2 border-gray-600 col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200"
               >
                 <div className="flex-1 flex flex-col p-8">
