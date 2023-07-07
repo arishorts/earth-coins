@@ -63,7 +63,7 @@ type CoinEdge {
   type Query {
     me: User
     getCoinList(first: Int, after: String, last: Int, before: String): CoinConnection!
-    getAPICoins(offset: Int, limit: Int):[Coin]
+    getTotalCoins:[Coin]
   }
 
   type Mutation {

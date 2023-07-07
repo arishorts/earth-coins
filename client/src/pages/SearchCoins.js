@@ -3,7 +3,7 @@ import Auth from "../utils/auth";
 import { saveCoinIds, getSavedCoinIds } from "../utils/localStorage";
 import { useMutation, useQuery } from "@apollo/client";
 import { SAVE_COIN } from "../utils/mutations";
-import { QUERY_GETAPICOINS, QUERY_GETCOINLIST } from "../utils/queries";
+import { QUERY_GETCOINLIST, QUERY_GETTOTALCOINS } from "../utils/queries";
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import {
@@ -18,16 +18,6 @@ const SearchCoins = () => {
   const [offset, setOffset] = useState(1);
   const [limit, setLimit] = useState(16);
   const [totalCoins, setTotalCoins] = useState(0);
-  // const { loading, error, data, fetchMore } = useQuery(QUERY_GETAPICOINS, {
-  //   variables: { offset, limit },
-  //   // skip: !limit, // Skip initial query until limit is set
-  // });
-  const { loading, error, data, fetchMore } = useQuery(QUERY_GETCOINLIST, {
-    variables: { first: 200 },
-    fetchPolicy: "cache-and-network",
-  });
-  // const coinList = data?.getAPICoins || [];
-  const coinList = data?.getCoinList?.edges || [];
 
   // create state for holding returned google api data
   const [searchedCoins, setSearchedCoins] = useState([]);
@@ -37,32 +27,43 @@ const SearchCoins = () => {
   const [savedCoinIds, setSavedCoinIds] = useState(getSavedCoinIds());
   const [saveCoin] = useMutation(SAVE_COIN);
 
-  useEffect(() => {
-    const fetchTotalCoins = async () => {
-      try {
-        const response = await fetch(
-          "https://api.coingecko.com/api/v3/coins/list"
-        );
-        const coins = await response.json();
-        setTotalCoins(coins.length);
-      } catch (error) {
-        console.error("Error occurred while fetching total coins:", error);
-      }
-    };
+  const { loading, error, data, fetchMore } = useQuery(QUERY_GETCOINLIST, {
+    variables: { first: 200 },
+    fetchPolicy: "cache-and-network",
+  });
 
-    fetchTotalCoins();
-  }, [limit]);
+  const { loading: totalloading, data: totaldata } =
+    useQuery(QUERY_GETTOTALCOINS);
+
+  useEffect(() => {
+    if (!totalloading && totaldata?.getTotalCoins) {
+      setTotalCoins(totaldata.getTotalCoins.length);
+    }
+  }, [totalloading, totaldata]);
+
+  //this useEffect might go crazy when i start to add fetchmore-ing into the equation
+  useEffect(() => {
+    if (!loading && data?.getCoinList?.edges) {
+      // const coinList = data?.getAPICoins || [];
+      const newSearchedCoins = data?.getCoinList?.edges || [];
+      setSearchedCoins(newSearchedCoins);
+    }
+  }, [loading, data]);
 
   // set up useEffect hook to save `savedCoinIds` list to localStorage on component unmount
   useEffect(() => {
     return () => saveCoinIds(savedCoinIds);
   }, [savedCoinIds]);
 
+  // Calculate the start and end indices based on the current page and selected option
   useEffect(() => {
-    if (!loading && data?.getCoinList?.edges) {
-      setSearchedCoins(coinList);
-    }
-  }, [loading, data]);
+    const startIndex = (offset - 1) * parseInt(limit);
+    const endIndex = startIndex + parseInt(limit);
+    const newVisibleCoins = searchedCoins
+      .map((coin) => coin.node)
+      .slice(startIndex, endIndex);
+    setVisibleCoins(newVisibleCoins);
+  }, [searchedCoins, limit, offset]);
 
   // create function to handle saving a coin to our database
   const handleSaveCoin = async (coinId) => {
@@ -94,38 +95,18 @@ const SearchCoins = () => {
   }
 
   const handleLimitSelect = (limit) => {
+    setOffset(1);
     setLimit(limit);
-    //NEED TO UNCOMMENT THIS OUT WHEN READY
-    //refetch();
   };
 
-  // const handlePageChange = (newOffset) => {
-  //   fetchMore({
-  //     variables: {
-  //       offset: newOffset,
-  //     },
-  //   });
-  //   //added above code starting at etchmore which causes the app to hit 429 limit rather quickly
-  //   setOffset(newOffset);
-  //   //NEED TO UNCOMMENT THIS OUT WHEN READY
-  //   //refetch();
-  // };
-
   const handlePageChange = (newOffset) => {
-    console.log("newoffset is : ", newOffset);
-    console.log("limit is : ", limit);
-    console.log(newOffset * limit);
-    console.log(coinList);
-    console.log(coinList[limit - 1]?.cursor);
-
-    const currentPage = Math.floor((newOffset * limit) / 200) + 1;
-
-    if (currentPage % 200 === 0) {
-      const nextPage = currentPage / 200 + 1;
+    const currentPage = newOffset;
+    if (currentPage * limit > 200) {
       fetchMore({
         variables: {
           first: 200,
-          after: coinList[coinList.length - 1].cursor,
+          //BUGFIX: CURRENTLY WHATS HAPPENING IS THAT THE FETCH ONLY GETS 200 ITEMS, BECAUSE I SET IT THAT WAY. HOWEVER, THIS FETCHMORE ASSUMES THAT I CAN FETCH UNLIMITED DATAPOINTS FROM THE SERVER WHENEVER I WANT. THIS ISSUE IS THAT THE END POINT IS PAGINATED AND MY CODE NEEDS TO CHANGE SO THAT IT FETCHES A NEW PAGE WHEN THE LIMIT (200) IS REACHED.
+          after: searchedCoins[searchedCoins.length - 1].cursor,
         },
         updateQuery: (prevResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prevResult;
@@ -146,22 +127,13 @@ const SearchCoins = () => {
           };
         },
       });
+      console.log(searchedCoins);
     }
     setOffset(newOffset);
   };
 
-  // Calculate the start and end indices based on the current page and selected option
-  useEffect(() => {
-    const startIndex = (offset - 1) * parseInt(limit);
-    const endIndex = startIndex + parseInt(limit);
-    const newVisibleCoins = coinList
-      .map((coin) => coin.node)
-      .slice(startIndex, endIndex);
-    setVisibleCoins(newVisibleCoins);
-  }, [coinList, limit, offset]);
-
   // if data isn't here yet, say so
-  if (loading) return "Loading...";
+  if (loading && totalloading) return "Loading...";
   if (error) return `Error! ${error.message}`;
 
   return (
