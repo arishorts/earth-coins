@@ -26,20 +26,56 @@ const resolvers = {
       }
     },
 
-    getSavedCoins: async (parent, args, context) => {
-      if (context.user) {
-        const user = await User.findById(context.user._id).populate(
-          "savedCoins"
-        );
+    getCoinList: async (_, { first, after, last, before }, { dataSources }) => {
+      const coins = await dataSources.coinGeckoAPI.getCoinList();
+      // let start = 0;
+      // let end = coins.length;
+      let startIndex = 0;
+      let endIndex = coins.length;
+      // first: Specifies the number of items to fetch from the beginning of the list. For example, if first is set to 10, it will fetch the first 10 items.
+      // after: Specifies the cursor value of the first item of the next page. It retrieves the items after this cursor value.
+      // By using these parameters, you can control the range of items to retrieve and navigate through the pages of a paginated result set. For example, you can use first and after to fetch the next page of items, or last and before to fetch the previous page of items.
 
-        if (user) {
-          return user.savedCoins;
-        } else {
-          throw new Error("User not found!");
-        }
-      } else {
-        throw new AuthenticationError("You need to be logged in!");
+      if (first) {
+        endIndex = Math.min(first, coins.length);
       }
+
+      if (after) {
+        startIndex = coins.findIndex((coin) => coin.cursor === after) + 1;
+      }
+
+      if (last) {
+        const requestedEndIndex = coins.length - Math.min(last, coins.length);
+        endIndex = Math.max(requestedEndIndex, 0);
+      }
+
+      if (before) {
+        const requestedStartIndex = coins.findIndex(
+          (coin) => coin.cursor === before
+        );
+        startIndex = Math.max(requestedStartIndex, 0);
+      }
+
+      const paginatedCoins = coins.slice(startIndex, endIndex);
+      const edges = paginatedCoins.map((coin) => ({
+        cursor: coin.cursor,
+        node: coin.node,
+      }));
+
+      const startCursor = edges.length > 0 ? edges[0].cursor : null;
+      const endCursor =
+        edges.length > 0 ? edges[edges.length - 1].cursor : null;
+      const hasNextPage = endIndex < coins.length;
+      const hasPreviousPage = startIndex > 0;
+      return {
+        edges,
+        pageInfo: {
+          startCursor,
+          endCursor,
+          hasNextPage,
+          hasPreviousPage,
+        },
+      };
     },
   },
 
@@ -83,7 +119,7 @@ const resolvers = {
           { new: true }
         ).populate("savedCoins");
         // // Populate users associated with the coin
-        coin = await Coin.findOne({ _id: coin._id }).populate("users");
+        coin = await Coin.findOne({ coinId: coin.coinId }).populate("users");
 
         return { user: updatedUser, coin };
       }
@@ -122,11 +158,11 @@ const resolvers = {
             coin.users = users;
             await coin.save();
           } else {
-            await Coin.deleteOne({ _id: coin._id });
+            await Coin.deleteOne({ coinId: coin.coinId });
           }
         } else {
           // If the users field does not exist or is not an array, delete the coin document
-          await Coin.deleteOne({ _id: coin._id });
+          await Coin.deleteOne({ coinId: coin._coinId });
         }
 
         return user;

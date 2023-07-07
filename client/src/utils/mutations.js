@@ -32,7 +32,6 @@ export const SAVE_COIN = gql`
         username
         email
         savedCoins {
-          _id
           coinId
           current_price
           image
@@ -41,11 +40,12 @@ export const SAVE_COIN = gql`
         coinCount
       }
       coin {
-        _id
         coinId
-        current_price
+        ath
         image
+        current_price
         symbol
+        market_cap
         savedBy {
           _id
           username

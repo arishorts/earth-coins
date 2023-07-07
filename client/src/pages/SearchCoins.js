@@ -3,7 +3,7 @@ import Auth from "../utils/auth";
 import { saveCoinIds, getSavedCoinIds } from "../utils/localStorage";
 import { useMutation, useQuery } from "@apollo/client";
 import { SAVE_COIN } from "../utils/mutations";
-import { QUERY_GETAPICOINS } from "../utils/queries";
+import { QUERY_GETAPICOINS, QUERY_GETCOINLIST } from "../utils/queries";
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import {
@@ -18,14 +18,20 @@ const SearchCoins = () => {
   const [offset, setOffset] = useState(1);
   const [limit, setLimit] = useState(16);
   const [totalCoins, setTotalCoins] = useState(0);
-  const { loading, error, data, fetchMore } = useQuery(QUERY_GETAPICOINS, {
-    variables: { offset, limit },
-    // skip: !limit, // Skip initial query until limit is set
+  // const { loading, error, data, fetchMore } = useQuery(QUERY_GETAPICOINS, {
+  //   variables: { offset, limit },
+  //   // skip: !limit, // Skip initial query until limit is set
+  // });
+  const { loading, error, data, fetchMore } = useQuery(QUERY_GETCOINLIST, {
+    variables: { first: 200 },
+    fetchPolicy: "cache-and-network",
   });
-  const coinList = data?.getAPICoins || [];
+  // const coinList = data?.getAPICoins || [];
+  const coinList = data?.getCoinList?.edges || [];
 
   // create state for holding returned google api data
   const [searchedCoins, setSearchedCoins] = useState([]);
+  const [visibleCoins, setVisibleCoins] = useState([]);
 
   // create state to hold saved coinId values
   const [savedCoinIds, setSavedCoinIds] = useState(getSavedCoinIds());
@@ -45,7 +51,7 @@ const SearchCoins = () => {
     };
 
     fetchTotalCoins();
-  }, []);
+  }, [limit]);
 
   // set up useEffect hook to save `savedCoinIds` list to localStorage on component unmount
   useEffect(() => {
@@ -53,15 +59,15 @@ const SearchCoins = () => {
   }, [savedCoinIds]);
 
   useEffect(() => {
-    if (!loading && coinList) {
+    if (!loading && data?.getCoinList?.edges) {
       setSearchedCoins(coinList);
     }
-  }, [loading, coinList]);
+  }, [loading, data]);
 
   // create function to handle saving a coin to our database
   const handleSaveCoin = async (coinId) => {
     // find the coin in `searchedCoins` state by the matching id
-    let coinToSave = searchedCoins.find((coin) => coin.coinId === coinId);
+    let coinToSave = searchedCoins.find((coin) => coin.node.coinId === coinId);
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -69,16 +75,15 @@ const SearchCoins = () => {
     if (!token) {
       return false;
     }
-
     try {
       await saveCoin({
         variables: {
-          content: { ...coinToSave },
+          content: { ...coinToSave.node },
         },
       });
 
       // if coin successfully saves to user's account, save coin id to state
-      setSavedCoinIds([coinToSave.coinId, ...savedCoinIds]);
+      setSavedCoinIds([coinToSave.node.coinId, ...savedCoinIds]);
     } catch (err) {
       console.error(err);
     }
@@ -94,22 +99,66 @@ const SearchCoins = () => {
     //refetch();
   };
 
+  // const handlePageChange = (newOffset) => {
+  //   fetchMore({
+  //     variables: {
+  //       offset: newOffset,
+  //     },
+  //   });
+  //   //added above code starting at etchmore which causes the app to hit 429 limit rather quickly
+  //   setOffset(newOffset);
+  //   //NEED TO UNCOMMENT THIS OUT WHEN READY
+  //   //refetch();
+  // };
+
   const handlePageChange = (newOffset) => {
-    fetchMore({
-      variables: {
-        offset: newOffset,
-      },
-    });
-    //added above code starting at etchmore which causes the app to hit 429 limit rather quickly
+    console.log("newoffset is : ", newOffset);
+    console.log("limit is : ", limit);
+    console.log(newOffset * limit);
+    console.log(coinList);
+    console.log(coinList[limit - 1]?.cursor);
+
+    const currentPage = Math.floor((newOffset * limit) / 200) + 1;
+
+    if (currentPage % 200 === 0) {
+      const nextPage = currentPage / 200 + 1;
+      fetchMore({
+        variables: {
+          first: 200,
+          after: coinList[coinList.length - 1].cursor,
+        },
+        updateQuery: (prevResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prevResult;
+          const newCoinList = [
+            ...prevResult.getCoinList.edges,
+            ...fetchMoreResult.getCoinList.edges,
+          ];
+          setSearchedCoins(newCoinList); // Update coinList state with new data
+          return {
+            getCoinList: {
+              ...prevResult.getCoinList,
+              edges: [
+                ...prevResult.getCoinList.edges,
+                ...fetchMoreResult.getCoinList.edges,
+              ],
+              pageInfo: fetchMoreResult.getCoinList.pageInfo,
+            },
+          };
+        },
+      });
+    }
     setOffset(newOffset);
-    //NEED TO UNCOMMENT THIS OUT WHEN READY
-    //refetch();
   };
 
   // Calculate the start and end indices based on the current page and selected option
-  const startIndex = (offset - 1) * parseInt(limit);
-  const endIndex = startIndex + parseInt(limit);
-  const visibleCoins = searchedCoins.slice(startIndex, endIndex);
+  useEffect(() => {
+    const startIndex = (offset - 1) * parseInt(limit);
+    const endIndex = startIndex + parseInt(limit);
+    const newVisibleCoins = coinList
+      .map((coin) => coin.node)
+      .slice(startIndex, endIndex);
+    setVisibleCoins(newVisibleCoins);
+  }, [coinList, limit, offset]);
 
   // if data isn't here yet, say so
   if (loading) return "Loading...";
@@ -223,7 +272,7 @@ const SearchCoins = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
-          {coinList.map((coin) => (
+          {visibleCoins.map((coin) => (
             <li
               key={coin.coinId}
               className="border-2 border-gray-600 col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200"
@@ -237,7 +286,11 @@ const SearchCoins = () => {
                 <h3 className="mt-6 text-gray-900 font-medium">{coin.name}</h3>
                 <dl className="mt-1 flex-grow flex flex-col justify-between">
                   <dt className="sr-only">Price</dt>
-                  <dd className="text-gray-500">{coin.current_price}</dd>
+                  <dd className="text-gray-500">
+                    <span className="px-2 py-1 text-green-800 font-medium bg-green-100 rounded-full">
+                      {coin.current_price}
+                    </span>
+                  </dd>
                   <dt className="sr-only">Symbol</dt>
                   <dd className="mt-3">
                     <span className="px-2 py-1 text-green-800 font-medium bg-green-100 rounded-full">
@@ -319,7 +372,7 @@ const SearchCoins = () => {
                 </div>
                 <button
                   onClick={() => handlePageChange(offset + 1)}
-                  disabled={offset === 10}
+                  disabled={offset === Math.ceil(totalCoins / limit)}
                   className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                 >
                   <span className="sr-only">Next</span>
