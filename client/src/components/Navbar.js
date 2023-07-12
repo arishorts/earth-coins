@@ -23,7 +23,7 @@ const AppNavbar = () => {
               <ul className="flex items-center justify-end flex-wrap">
                 <li className="ml-2 mr-6">
                   <Link to="/search" className="nav-link hover:text-sky-500">
-                    All Coins
+                    Coins
                   </Link>
                 </li>
                 {/* if user is logged in show saved coins and logout */}
@@ -31,7 +31,7 @@ const AppNavbar = () => {
                   <>
                     <li className="mr-6">
                       <Link to="/saved" className="nav-link hover:text-sky-500">
-                        Your Coins
+                        Profile
                       </Link>
                     </li>
                     <li onClick={Auth.logout} className="cursor-pointer">
