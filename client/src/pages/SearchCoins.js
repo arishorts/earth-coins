@@ -19,6 +19,7 @@ const SearchCoins = () => {
   const [limit, setLimit] = useState(16);
   const [totalCoins, setTotalCoins] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [savingCoins, setSavingCoins] = useState(false);
 
   // create state for holding returned google api data
   const [searchedCoins, setSearchedCoins] = useState([]);
@@ -102,6 +103,7 @@ const SearchCoins = () => {
     } catch (err) {
       console.error(err);
     }
+    setSavingCoins(false);
   };
 
   function classNames(...classes) {
@@ -286,8 +288,11 @@ const SearchCoins = () => {
               <div className="flex justify-end mt-2 mb-3">
                 {/* Save button */}
                 <button
-                  onClick={() => handleSaveCoin(coin.coinId)}
-                  disabled={savedCoinIds.includes(coin.coinId)}
+                  onClick={() => {
+                    setSavingCoins(true); // Introduced so the user cannot accidentally cause errors when saving coins too quickly
+                    handleSaveCoin(coin.coinId);
+                  }}
+                  disabled={savingCoins || savedCoinIds.includes(coin.coinId)}
                   className={classNames(
                     savedCoinIds.includes(coin.coinId)
                       ? "opacity-50 cursor-not-allowed"
