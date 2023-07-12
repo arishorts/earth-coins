@@ -18,6 +18,7 @@ const SearchCoins = () => {
   const [offset, setOffset] = useState(1);
   const [limit, setLimit] = useState(16);
   const [totalCoins, setTotalCoins] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   // create state for holding returned google api data
   const [searchedCoins, setSearchedCoins] = useState([]);
@@ -28,8 +29,9 @@ const SearchCoins = () => {
   const [saveCoin] = useMutation(SAVE_COIN);
 
   const { loading, error, data, fetchMore } = useQuery(QUERY_GETCOINLIST, {
-    variables: { first: 200 },
-    fetchPolicy: "cache-and-network",
+    variables: { page: 1 },
+    fetchPolicy: "cache-first",
+    pollInterval: 5 * 60 * 1000, // Poll every 5 minutes (in milliseconds)
   });
 
   const { loading: totalloading, data: totaldata } =
@@ -57,18 +59,30 @@ const SearchCoins = () => {
 
   // Calculate the start and end indices based on the current page and selected option
   useEffect(() => {
-    const startIndex = (offset - 1) * parseInt(limit);
-    const endIndex = startIndex + parseInt(limit);
-    const newVisibleCoins = searchedCoins
-      .map((coin) => coin.node)
-      .slice(startIndex, endIndex);
-    setVisibleCoins(newVisibleCoins);
-  }, [searchedCoins, limit, offset]);
+    if (!loading && !totalloading) {
+      const startIndex = (offset - 1) * parseInt(limit);
+      const endIndex = startIndex + parseInt(limit);
+      const newVisibleCoins = searchedCoins
+        .map((coin) => coin.node)
+        .slice(startIndex, endIndex);
+      setVisibleCoins(newVisibleCoins);
+      const newtotalpages = searchedCoins.length / limit;
+      setTotalPages(newtotalpages);
+    }
+  }, [searchedCoins, limit, offset, loading, totalloading]);
 
   // create function to handle saving a coin to our database
   const handleSaveCoin = async (coinId) => {
     // find the coin in `searchedCoins` state by the matching id
     let coinToSave = searchedCoins.find((coin) => coin.node.coinId === coinId);
+    let newCoinToSave = {
+      coinId: coinToSave.node.coinId,
+      ath: coinToSave.node.ath,
+      image: coinToSave.node.image,
+      current_price: coinToSave.node.current_price,
+      symbol: coinToSave.node.symbol,
+      market_cap: coinToSave.node.market_cap,
+    };
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -79,7 +93,7 @@ const SearchCoins = () => {
     try {
       await saveCoin({
         variables: {
-          content: { ...coinToSave.node },
+          content: { ...newCoinToSave },
         },
       });
 
@@ -100,13 +114,12 @@ const SearchCoins = () => {
   };
 
   const handlePageChange = (newOffset) => {
-    const currentPage = newOffset;
-    if (currentPage * limit > 200) {
+    if (newOffset > Math.floor(totalPages)) {
       fetchMore({
         variables: {
-          first: 200,
-          //BUGFIX: CURRENTLY WHATS HAPPENING IS THAT THE FETCH ONLY GETS 200 ITEMS, BECAUSE I SET IT THAT WAY. HOWEVER, THIS FETCHMORE ASSUMES THAT I CAN FETCH UNLIMITED DATAPOINTS FROM THE SERVER WHENEVER I WANT. THIS ISSUE IS THAT THE END POINT IS PAGINATED AND MY CODE NEEDS TO CHANGE SO THAT IT FETCHES A NEW PAGE WHEN THE LIMIT (200) IS REACHED.
           after: searchedCoins[searchedCoins.length - 1].cursor,
+          total: totalCoins,
+          page: searchedCoins.length / 200 + 1,
         },
         updateQuery: (prevResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prevResult;
@@ -127,7 +140,6 @@ const SearchCoins = () => {
           };
         },
       });
-      console.log(searchedCoins);
     }
     setOffset(newOffset);
   };

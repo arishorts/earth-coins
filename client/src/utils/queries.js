@@ -17,23 +17,9 @@ export const QUERY_ME = gql`
   }
 `;
 
-// export const QUERY_GETAPICOINS = gql`
-//   query getAPICoins($offset: Int, $limit: Int) {
-//     getAPICoins(offset: $offset, limit: $limit) {
-//       coinId
-//       name
-//       ath
-//       image
-//       current_price
-//       symbol
-//       market_cap
-//     }
-//   }
-// `;
-
 export const QUERY_GETCOINLIST = gql`
-  query getCoinList($after: String, $first: Int, $last: Int, $before: String) {
-    getCoinList(after: $after, first: $first, last: $last, before: $before) {
+  query getCoinList($after: String, $first: Int, $total: Int, $page: Int) {
+    getCoinList(after: $after, first: $first, total: $total, page: $page) {
       edges {
         cursor
         node {

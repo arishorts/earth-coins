@@ -14,19 +14,6 @@ const resolvers = {
       throw new AuthenticationError("You need to be logged in!");
     },
 
-    // getAPICoins: async (parent, { offset, limit }, { dataSources }) => {
-    //   try {
-    //     const response = await dataSources.coinGeckoAPI.getAPICoins(
-    //       offset,
-    //       limit
-    //     );
-    //     return response;
-    //   } catch (error) {
-    //     console.error("Error occurred while fetching API coins:", error);
-    //     return [];
-    //   }
-    // },
-
     getTotalCoins: async (parent, args, { dataSources }) => {
       try {
         const response = await dataSources.coinGeckoAPI.getTotalCoins();
@@ -37,35 +24,10 @@ const resolvers = {
       }
     },
 
-    getCoinList: async (_, { first, after, last, before }, { dataSources }) => {
-      const coins = await dataSources.coinGeckoAPI.getCoinList();
-      // let start = 0;
-      // let end = coins.length;
+    getCoinList: async (_, { first, after, total, page }, { dataSources }) => {
+      const coins = await dataSources.coinGeckoAPI.getCoinList(page);
       let startIndex = 0;
-      let endIndex = coins.length;
-      // first: Specifies the number of items to fetch from the beginning of the list. For example, if first is set to 10, it will fetch the first 10 items.
-      // after: Specifies the cursor value of the first item of the next page. It retrieves the items after this cursor value.
-      // By using these parameters, you can control the range of items to retrieve and navigate through the pages of a paginated result set. For example, you can use first and after to fetch the next page of items, or last and before to fetch the previous page of items.
-
-      if (first) {
-        endIndex = Math.min(first, coins.length);
-      }
-
-      if (after) {
-        startIndex = coins.findIndex((coin) => coin.cursor === after) + 1;
-      }
-
-      if (last) {
-        const requestedEndIndex = coins.length - Math.min(last, coins.length);
-        endIndex = Math.max(requestedEndIndex, 0);
-      }
-
-      if (before) {
-        const requestedStartIndex = coins.findIndex(
-          (coin) => coin.cursor === before
-        );
-        startIndex = Math.max(requestedStartIndex, 0);
-      }
+      let endIndex = page * 200;
 
       const paginatedCoins = coins.slice(startIndex, endIndex);
       const edges = paginatedCoins.map((coin) => ({
@@ -76,8 +38,8 @@ const resolvers = {
       const startCursor = edges.length > 0 ? edges[0].cursor : null;
       const endCursor =
         edges.length > 0 ? edges[edges.length - 1].cursor : null;
-      const hasNextPage = endIndex < coins.length;
-      const hasPreviousPage = startIndex > 0;
+      const hasNextPage = total > page * 200;
+      const hasPreviousPage = false;
       return {
         edges,
         pageInfo: {
