@@ -36,8 +36,18 @@ const client = new ApolloClient({
   // Set up our client to execute the `authLink` middleware prior to making the request to our GraphQL API
   link: authLink.concat(httpLink),
   cache: new InMemoryCache({
-    addTypename: false,
+    // addTypename: false,
+    //we may need to keeptypename in because this is required for caching
   }),
+  typePolicies: {
+    Query: {
+      fields: {
+        getCoinList: {
+          keyArgs: ["page"],
+        },
+      },
+    },
+  },
 });
 
 // function App({ Component, pageProps }) {

@@ -49,20 +49,20 @@ type CoinConnection {
 
 # Define the edge type for a coin in the connection
 type CoinEdge {
-  cursor: String!
+  cursor: String
   node: Coin
 }
 
   type PageInfo {
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
+  hasNextPage: Boolean
+  hasPreviousPage: Boolean
   startCursor: String
   endCursor: String
 }
 
   type Query {
     me: User
-    getCoinList(first: Int, after: String, last: Int, before: String): CoinConnection!
+    getCoinList(first: Int, after: String, total: Int, page: Int): CoinConnection!
     getTotalCoins:[Coin]
   }
 
