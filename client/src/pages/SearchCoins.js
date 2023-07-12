@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Auth from "../utils/auth";
 import { saveCoinIds, getSavedCoinIds } from "../utils/localStorage";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery, NetworkStatus } from "@apollo/client";
 import { SAVE_COIN } from "../utils/mutations";
 import { QUERY_GETCOINLIST, QUERY_GETTOTALCOINS } from "../utils/queries";
 import { Fragment } from "react";
@@ -10,9 +10,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronDownIcon,
-  CheckIcon,
-  PlusIcon,
 } from "@heroicons/react/20/solid";
+import CoinCard from "./CoinCard";
 
 const SearchCoins = () => {
   const [offset, setOffset] = useState(1);
@@ -29,11 +28,16 @@ const SearchCoins = () => {
   const [savedCoinIds, setSavedCoinIds] = useState(getSavedCoinIds());
   const [saveCoin] = useMutation(SAVE_COIN);
 
-  const { loading, error, data, fetchMore } = useQuery(QUERY_GETCOINLIST, {
-    variables: { page: 1 },
-    fetchPolicy: "cache-first",
-    pollInterval: 5 * 60 * 1000, // Poll every 5 minutes (in milliseconds)
-  });
+  const { loading, error, data, fetchMore, networkStatus } = useQuery(
+    QUERY_GETCOINLIST,
+    {
+      variables: { page: 1 },
+      fetchPolicy: "cache-first", //this is the default and didn't need to be set mmanually
+      pollInterval: 5 * 60 * 1000, // Poll every 5 minutes (in milliseconds)
+      notifyOnNetworkStatusChange: true,
+      errorPolicy: "all",
+    }
+  );
 
   const { loading: totalloading, data: totaldata } =
     useQuery(QUERY_GETTOTALCOINS);
@@ -74,6 +78,7 @@ const SearchCoins = () => {
 
   // create function to handle saving a coin to our database
   const handleSaveCoin = async (coinId) => {
+    setSavingCoins(true);
     // find the coin in `searchedCoins` state by the matching id
     let coinToSave = searchedCoins.find((coin) => coin.node.coinId === coinId);
     let newCoinToSave = {
@@ -147,6 +152,7 @@ const SearchCoins = () => {
   };
 
   // if data isn't here yet, say so
+  if (networkStatus === NetworkStatus.refetch) return "Refetching!";
   if (loading && totalloading) return "Loading...";
   if (error) return `Error! ${error.message}`;
 
@@ -259,67 +265,17 @@ const SearchCoins = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
           {visibleCoins.map((coin) => (
-            <li
-              key={coin.coinId}
-              className="border-2 border-gray-600 col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200"
-            >
-              <div className="flex-1 flex flex-col p-8">
-                <img
-                  className="w-30 h-30 flex-shrink-0 mx-auto bg-black rounded-full"
-                  src={coin.image}
-                  alt=""
-                />
-                <h3 className="mt-6 text-gray-900 font-medium">{coin.name}</h3>
-                <dl className="mt-1 flex-grow flex flex-col justify-between">
-                  <dt className="sr-only">Price</dt>
-                  <dd className="text-gray-500">
-                    <span className="px-2 py-1 text-green-800 font-medium bg-green-100 rounded-full">
-                      {coin.current_price}
-                    </span>
-                  </dd>
-                  <dt className="sr-only">Symbol</dt>
-                  <dd className="mt-3">
-                    <span className="px-2 py-1 text-green-800 font-medium bg-green-100 rounded-full">
-                      {coin.symbol}
-                    </span>
-                  </dd>
-                </dl>
-              </div>
-              <div className="flex justify-end mt-2 mb-3">
-                {/* Save button */}
-                <button
-                  onClick={() => {
-                    setSavingCoins(true); // Introduced so the user cannot accidentally cause errors when saving coins too quickly
-                    handleSaveCoin(coin.coinId);
-                  }}
-                  disabled={savingCoins || savedCoinIds.includes(coin.coinId)}
-                  className={classNames(
-                    savedCoinIds.includes(coin.coinId)
-                      ? "opacity-50 cursor-not-allowed"
-                      : "save-new-coin",
-                    "relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-2 text-sm font-medium"
-                  )}
-                >
-                  {Auth.loggedIn() && savedCoinIds.includes(coin.coinId) ? (
-                    <>
-                      <CheckIcon
-                        className="w-5 h-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                      <span className="ml-3">Saved</span>
-                    </>
-                  ) : (
-                    <>
-                      <PlusIcon
-                        className="w-5 h-5 text-white-400"
-                        aria-hidden="true"
-                      />
-                      <span className="ml-3">Save</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </li>
+            <div>
+              <CoinCard
+                coin={coin}
+                onSaveCoin={handleSaveCoin}
+                loading={loading}
+                error={error}
+                networkStatus={networkStatus}
+                savedCoinIds={savedCoinIds}
+                savingCoins={savingCoins}
+              />
+            </div>
           ))}
         </div>
 
