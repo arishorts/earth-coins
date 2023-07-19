@@ -21,16 +21,11 @@ const CoinCard = ({
   if (error) return `Error! ${error.message}`;
 
   return (
-    <li
-      key={coin.coinId}
-      className="border-2 border-gray-600 col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200"
-    >
+    <li className="border-2 border-gray-600 col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200 h-full">
       <div className="flex-1 flex flex-col p-8">
-        <img
-          className="w-30 h-30 flex-shrink-0 mx-auto bg-black rounded-full"
-          src={coin.image}
-          alt=""
-        />
+        <div className="w-30 h-30 flex-shrink-0 mx-auto rounded-full overflow-hidden">
+          <img className="h-full w-full object-cover" src={coin.image} alt="" />
+        </div>
         <h3 className="mt-6 text-gray-900 font-medium">{coin.name}</h3>
         <dl className="mt-1 flex-grow flex flex-col justify-between">
           <dt className="sr-only">Price</dt>

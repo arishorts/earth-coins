@@ -16,7 +16,58 @@ const AppNavbar = () => {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between py-3">
             <Link to="/" className="text-xl font-bold hover:text-sky-500">
-              Home
+              <div className="flex align-items-center">
+                <div className="coin h-10 w-10 ms-2">
+                  <div className="coin-inner">
+                    <div className="coin-front">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="50"
+                        height="50"
+                        viewBox="0 0 100 100"
+                        className="animate-spin-fast"
+                      >
+                        <g>
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="#ccc"
+                            stroke="#000"
+                            strokeWidth="2"
+                          />
+                          <circle cx="50" cy="50" r="30" fill="#fff" />
+                          <circle cx="50" cy="50" r="20" fill="#0f0" />
+                          <circle cx="50" cy="50" r="12" fill="#00f" />
+                        </g>
+                      </svg>
+                    </div>
+                    <div className="coin-back">
+                      <svg
+                        width="50"
+                        height="50"
+                        viewBox="0 0 100 100"
+                        className="animate-spin-fast"
+                      >
+                        <g>
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="#ccc"
+                            stroke="#000"
+                            strokeWidth="2"
+                          />
+                          <circle cx="50" cy="50" r="30" fill="#fff" />
+                          <circle cx="50" cy="50" r="20" fill="#0f0" />
+                          <circle cx="50" cy="50" r="12" fill="#00f" />
+                        </g>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <p className="ms-3 fs-4">CryptoPortal</p>
+              </div>
             </Link>
 
             <div className="lg:items-center" id="navbar">

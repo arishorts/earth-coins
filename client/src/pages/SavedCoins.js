@@ -63,7 +63,7 @@ const SavedCoins = () => {
     <>
       <div className="py-10">
         <div className="container mx-auto text-center">
-          <p className="text-3xl inline-block p-2 rounded-full text-sky-900 border-sky-900 border-2">
+          <p className="text-3xl inline-block p-2 text-sky-900">
             {profile?.coinCount
               ? `Viewing ${profile.coinCount} saved ${
                   profile.coinCount === 1 ? "coin!" : "coins!"

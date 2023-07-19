@@ -161,8 +161,8 @@ const SearchCoins = () => {
       <div className="container mx-auto">
         <div className="py-10">
           <div className="container mx-auto text-center">
-            <p className="text-3xl inline-block p-2 rounded-full text-sky-900 border-sky-900 border-2">
-              Crypto Portal
+            <p className="text-3xl inline-block p-2 text-sky-900">
+              Explore the crypto market
             </p>
           </div>
           {!Auth.loggedIn() && (
@@ -265,7 +265,7 @@ const SearchCoins = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
           {visibleCoins.map((coin) => (
-            <div>
+            <div key={coin.coinId}>
               <CoinCard
                 coin={coin}
                 onSaveCoin={handleSaveCoin}
