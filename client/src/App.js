@@ -60,7 +60,7 @@ function App() {
             <div className="content-wrap">
               <Navbar />
               <Routes>
-                <Route exact path="/" element={<Home />} />
+                <Route exact path="/" element={<SearchCoins />} />
                 <Route exact path="/search" element={<SearchCoins />} />
                 <Route exact path="/saved" element={<SavedCoins />} />
                 <Route
