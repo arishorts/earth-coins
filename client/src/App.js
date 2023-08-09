@@ -4,7 +4,6 @@ import SearchCoins from "./pages/SearchCoins";
 import SavedCoins from "./pages/SavedCoins";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Home from "./components/Home";
 
 import {
   ApolloClient,

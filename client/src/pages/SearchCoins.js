@@ -33,7 +33,7 @@ const SearchCoins = () => {
     {
       variables: { page: 1 },
       fetchPolicy: "cache-first", //this is the default and didn't need to be set mmanually
-      pollInterval: 5 * 60 * 1000, // Poll every 5 minutes (in milliseconds)
+      pollInterval: 10 * 60 * 1000, // Poll every 10 minutes (in milliseconds)
       notifyOnNetworkStatusChange: true,
       errorPolicy: "all",
     }
