@@ -8,6 +8,7 @@ const typeDefs = `#graphql
     current_price: Float
     image: String
     symbol: String
+    name: String
     ath: Float
     market_cap: Float
     savedBy: [User]

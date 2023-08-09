@@ -25,6 +25,7 @@ export const QUERY_GETCOINLIST = gql`
         node {
           coinId
           ath
+          name
           image
           current_price
           symbol
@@ -45,6 +46,8 @@ export const QUERY_GETTOTALCOINS = gql`
   query getTotalCoins {
     getTotalCoins {
       coinId
+      symbol
+      name
     }
   }
 `;

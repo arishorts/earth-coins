@@ -17,6 +17,7 @@ class CoinGeckoAPI extends RESTDataSource {
         cursor: coin.id,
         node: {
           coinId: coin.id,
+          name: coin.name,
           ath: coin.ath,
           image: coin.image,
           current_price: coin.current_price,
@@ -38,6 +39,8 @@ class CoinGeckoAPI extends RESTDataSource {
       );
       return response.map((coin) => ({
         coinId: coin.id,
+        symbol: coin.symbol,
+        name: coin.name,
       }));
     } catch (error) {
       // Handle the error appropriately
